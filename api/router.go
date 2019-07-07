@@ -54,6 +54,7 @@ var (
 		linkedInUserAuthCode,
 		linkedInLogIn,
 		linkedInUserURL,
+		linkedInUserCrawl,
 	}
 )
 

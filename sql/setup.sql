@@ -54,7 +54,7 @@ CREATE TABLE IF NOT EXISTS company
 
 CREATE TABLE IF NOT EXISTS user_to_school
 (
-    user_id     NUMERIC   NOT NULL,
+    user_id     TEXT   NOT NULL,
     school_id   NUMERIC   NOT NULL,
     from_year   INTEGER   NULL,
     to_year     INTEGER   NULL,
@@ -64,7 +64,7 @@ CREATE TABLE IF NOT EXISTS user_to_school
 
 CREATE TABLE IF NOT EXISTS user_to_company
 (
-    user_id     NUMERIC   NOT NULL,
+    user_id     TEXT   NOT NULL,
     company_id  NUMERIC   NOT NULL,
     title       TEXT      NULL,
     from_year   INTEGER   NULL,
@@ -75,7 +75,7 @@ CREATE TABLE IF NOT EXISTS user_to_company
 
 CREATE TABLE IF NOT EXISTS user_to_groups
 (
-    user_id    NUMERIC NOT NULL,
+    user_id    TEXT NOT NULL,
     group_name TEXT    NOT NULL,
     status     BOOLEAN NOT NULL,
     PRIMARY KEY (user_id, group_name)

@@ -31,7 +31,7 @@ type (
 
 	ImageLink string
 
-	UserID int64
+	UserID string
 
 	SchoolID int64
 

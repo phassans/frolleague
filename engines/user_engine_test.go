@@ -47,7 +47,7 @@ func newUserEngine(t *testing.T) {
 func TestUserEngine_SignUp_Login(t *testing.T) {
 	newUserEngine(t)
 	{
-		err := uEngine.SignUp(testUserName, testPassword, testLinkedInURL)
+		_, err := uEngine.SignUp(testUserName, testPassword, testLinkedInURL)
 		require.NoError(t, err)
 
 		user, err := uEngine.Login(testUserName, testPassword)

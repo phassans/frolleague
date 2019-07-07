@@ -39,7 +39,7 @@ func (r userGroupToggleEndpoint) Execute(ctx context.Context, rtr *router, reque
 
 func (r userGroupToggleEndpoint) Validate(request interface{}) error {
 	input := request.(userGroupToggleRequest)
-	if input.UserID == 0 || input.Group == "" {
+	if input.UserID == "" || input.Group == "" {
 		return common.ValidationError{Message: fmt.Sprint("invalid userId or group to toggle usergroup")}
 	}
 	return nil

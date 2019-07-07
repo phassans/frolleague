@@ -6,7 +6,6 @@ import (
 	"io/ioutil"
 	"os"
 	"regexp"
-	"time"
 
 	"github.com/nu7hatch/gouuid"
 )
@@ -34,7 +33,7 @@ func (c *client) CrawlUrl(linkedInURL string, file bool) (CrawlResponse, error) 
 }
 
 func (c *client) doCrawlUrlFile() (CrawlResponse, error) {
-	time.Sleep(20 * time.Second)
+	//time.Sleep(20 * time.Second)
 
 	fileName := userDataPath + jsonFile
 	if _, err := os.Stat(fileName); os.IsNotExist(err) {
