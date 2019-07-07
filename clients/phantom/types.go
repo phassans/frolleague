@@ -111,19 +111,19 @@ type (
 	}
 
 	Company struct {
-		CompanyName CompanyName
-		FromYear    FromYear
-		ToYear      ToYear
-		Title       Title
-		Location    Location
+		CompanyName CompanyName `json:"companyName"`
+		FromYear    FromYear    `json:"fromYear"`
+		ToYear      ToYear      `json:"toYear"`
+		Title       Title       `json:"title"`
+		Location    Location    `json:"location"`
 	}
 
 	School struct {
-		SchoolName   SchoolName
-		Degree       Degree
-		FieldOfStudy FieldOfStudy
-		FromYear     FromYear
-		ToYear       ToYear
+		SchoolName   SchoolName   `json:"schoolName"`
+		Degree       Degree       `json:"degree"`
+		FieldOfStudy FieldOfStudy `json:"fieldOfStudy"`
+		FromYear     FromYear     `json:"fromYear"`
+		ToYear       ToYear       `json:"toYear"`
 	}
 
 	Profile struct {

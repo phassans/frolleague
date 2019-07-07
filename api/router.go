@@ -56,6 +56,8 @@ var (
 		userLinkedInURL,
 		userLinkedInCrawl,
 		userInfo,
+		userCompaniesUpdate,
+		userSchoolsUpdate,
 	}
 )
 

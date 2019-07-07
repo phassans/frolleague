@@ -29,6 +29,10 @@ type (
 		CrawlUserProfile(LinkedInUserID) (phantom.Profile, error)
 		SaveUserProfile(LinkedInUserID, phantom.Profile) error
 		UpdateUserWithLinkedInURL(UserID LinkedInUserID, url LinkedInURL) error
+
+		// Adds
+		UpdateUserSchools(UserID, []phantom.School) error
+		UpdateUserCompanies(UserID, []phantom.Company) error
 	}
 )
 
@@ -126,21 +130,23 @@ func (l *linkedInEngine) SaveUserProfile(userID LinkedInUserID, profile phantom.
 }
 
 func (l *linkedInEngine) addUserToSchools(profile phantom.Profile, userID UserID) error {
-	for _, school := range profile.Schools {
-		schoolID, err := l.dbEngine.AddSchoolIfNotPresent(SchoolName(school.SchoolName), Degree(school.Degree), FieldOfStudy(school.FieldOfStudy))
-		if err != nil {
-			return err
-		}
-
-		if err := l.dbEngine.AddUserToSchool(userID, schoolID, FromYear(school.FromYear), ToYear(school.ToYear)); err != nil {
-			return err
-		}
-	}
-	return nil
+	return l.UpdateUserSchools(userID, profile.Schools)
 }
 
 func (l *linkedInEngine) addUserToCompanies(profile phantom.Profile, userID UserID) error {
-	for _, company := range profile.Companies {
+	return l.UpdateUserCompanies(userID, profile.Companies)
+}
+
+func (l *linkedInEngine) UpdateUserWithLinkedInURL(UserID LinkedInUserID, url LinkedInURL) error {
+	_, err := l.dbEngine.GetUserByID(UserID)
+	if err != nil {
+		return err
+	}
+	return l.dbEngine.UpdateUserWithLinkedInURL(UserID, url)
+}
+
+func (l *linkedInEngine) UpdateUserCompanies(userID UserID, companies []phantom.Company) error {
+	for _, company := range companies {
 		companyID, err := l.dbEngine.AddCompanyIfNotPresent(CompanyName(company.CompanyName), Location(company.Location))
 		if err != nil {
 			return err
@@ -162,10 +168,24 @@ func (l *linkedInEngine) addUserToCompanies(profile phantom.Profile, userID User
 	return nil
 }
 
-func (l *linkedInEngine) UpdateUserWithLinkedInURL(UserID LinkedInUserID, url LinkedInURL) error {
-	_, err := l.dbEngine.GetUserByID(UserID)
-	if err != nil {
-		return err
+func (l *linkedInEngine) UpdateUserSchools(userID UserID, schools []phantom.School) error {
+	for _, school := range schools {
+		schoolID, err := l.dbEngine.AddSchoolIfNotPresent(SchoolName(school.SchoolName), Degree(school.Degree), FieldOfStudy(school.FieldOfStudy))
+		if err != nil {
+			return err
+		}
+
+		if err := l.dbEngine.AddUserToSchool(userID, schoolID, FromYear(school.FromYear), ToYear(school.ToYear)); err != nil {
+			return err
+		}
+
+		// update user preferences
+		groups, err := l.dbEngine.AddGroupsToUser(userID)
+		if err != nil {
+			return err
+		}
+		l.logger.Info().Msgf("groups: %v", groups)
 	}
-	return l.dbEngine.UpdateUserWithLinkedInURL(UserID, url)
+
+	return nil
 }

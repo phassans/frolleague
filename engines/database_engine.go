@@ -574,7 +574,7 @@ func (d *databaseEngine) ToggleUserGroup(userID UserID, group Group, status bool
 
 func (d *databaseEngine) GetGroupsByUserID(userID UserID) ([]Group, error) {
 	rows, err := d.sql.Query("SELECT group_name FROM user_to_groups "+
-		"WHERE user_id=$1 AND status=$2", userID, true)
+		"WHERE user_id=$1", userID)
 	if err != nil {
 		return nil, common.DatabaseError{DBError: err.Error()}
 	}
