@@ -8,7 +8,6 @@ import (
 	"github.com/phassans/frolleague/clients/linkedin"
 
 	"github.com/phassans/frolleague/common"
-	"github.com/phassans/frolleague/engines"
 )
 
 type (
@@ -18,8 +17,8 @@ type (
 	}
 
 	linkedInLogInResponse struct {
-		LinkedInId engines.LinkedInId `json:"linkedInId"`
-		Message    string             `json:"message,omitempty"`
+		LinkedInId string `json:"linkedInId"`
+		Message    string `json:"message,omitempty"`
 	}
 
 	linkedInLogInEndpoint struct{}
@@ -34,7 +33,7 @@ func (r linkedInLogInEndpoint) Execute(ctx context.Context, rtr *router, request
 	}
 
 	resp, err := rtr.engines.LogIn(request.AuthCode, request.AccessToken)
-	result := linkedInLogInResponse{LinkedInId: engines.LinkedInId(resp.ID)}
+	result := linkedInLogInResponse{LinkedInId: resp.ID}
 	return result, err
 }
 

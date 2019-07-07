@@ -47,6 +47,17 @@ func (e DuplicateSignUp) Error() string {
 	return fmt.Sprintf("%s", string(b))
 }
 
+// DuplicateSignUp ...
+type DuplicateLinkedInUser struct {
+	LinkedInUserID string `json:"userId,omitempty"`
+	Message        string `json:"message,omitempty"`
+}
+
+func (e DuplicateLinkedInUser) Error() string {
+	b, _ := json.Marshal(e)
+	return fmt.Sprintf("%s", string(b))
+}
+
 // DatabaseError ...
 type DatabaseError struct {
 	DBError string `json:"dbError,omitempty"`
@@ -74,5 +85,15 @@ type LinkedInError struct {
 
 func (l LinkedInError) Error() string {
 	b, _ := json.Marshal(l)
+	return fmt.Sprintf("%s", string(b))
+}
+
+// ErrorNotExist ...
+type ErrorNotExist struct {
+	Message string `json:"message,omitempty"`
+}
+
+func (v ErrorNotExist) Error() string {
+	b, _ := json.Marshal(v)
 	return fmt.Sprintf("%s", string(b))
 }

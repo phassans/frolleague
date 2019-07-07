@@ -61,7 +61,7 @@ func main() {
 	// initialize engines
 	dbEngine = engines.NewDatabaseEngine(roach.Db, logger)
 	userEngine, err = engines.NewUserEngine(rocketClient, phantomClient, dbEngine, logger)
-	linkedInEngine = engines.NewLinkedInEngine(linkedInClient)
+	linkedInEngine = engines.NewLinkedInEngine(linkedInClient, roach.Db, logger)
 	if err != nil {
 		logger = logger.With().Str("error", err.Error()).Logger()
 		logger.Fatal().Msgf("could not initialize userEngine")

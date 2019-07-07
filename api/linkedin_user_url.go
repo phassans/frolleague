@@ -5,17 +5,14 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/phassans/frolleague/engines"
-
-	"github.com/phassans/frolleague/clients/linkedin"
-
 	"github.com/phassans/frolleague/common"
+	"github.com/phassans/frolleague/engines"
 )
 
 type (
 	linkedInUserURLRequest struct {
-		LinkedInId  linkedin.UserID     `json:"linkedInUserId"`
-		LinkedInURL engines.LinkedInURL `json:"linkedInURL"`
+		LinkedInUserID engines.LinkedInUserID `json:"linkedInUserId"`
+		LinkedInURL    engines.LinkedInURL    `json:"linkedInURL"`
 	}
 
 	linkedInUserURLResponse struct {
@@ -33,7 +30,7 @@ func (r linkedInUserURLEndpoint) Execute(ctx context.Context, rtr *router, reque
 		return loginResponse{}, err
 	}
 
-	err := rtr.engines.UpdateUserWithLinkedInURL(request.LinkedInId, request.LinkedInURL)
+	err := rtr.engines.UpdateUserWithLinkedInURL(request.LinkedInUserID, request.LinkedInURL)
 	if err != nil {
 		return linkedInUserURLResponse{Ok: false}, err
 	}
@@ -42,7 +39,7 @@ func (r linkedInUserURLEndpoint) Execute(ctx context.Context, rtr *router, reque
 
 func (r linkedInUserURLEndpoint) Validate(request interface{}) error {
 	input := request.(linkedInUserURLRequest)
-	if strings.TrimSpace(string(input.LinkedInId)) == "" {
+	if strings.TrimSpace(string(input.LinkedInUserID)) == "" {
 		return common.ValidationError{Message: fmt.Sprint("user me failed, missing fields!")}
 	}
 	return nil
