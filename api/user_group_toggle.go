@@ -16,9 +16,7 @@ type (
 	}
 
 	userGroupToggleResponse struct {
-		Request userGroupToggleRequest `json:"request,omitempty"`
-		Error   *APIError              `json:"error,omitempty"`
-		Message string                 `json:"message,omitempty"`
+		Message string `json:"message,omitempty"`
 	}
 
 	userGroupToggleEndpoint struct{}
@@ -33,7 +31,7 @@ func (r userGroupToggleEndpoint) Execute(ctx context.Context, rtr *router, reque
 	}
 
 	err := rtr.engines.ToggleUserGroup(request.UserID, request.Group, request.Status)
-	result := userGroupToggleResponse{Request: request, Error: NewAPIError(err), Message: r.GetMessage(err)}
+	result := userGroupToggleResponse{Message: r.GetMessage(err)}
 	return result, err
 }
 
@@ -46,7 +44,7 @@ func (r userGroupToggleEndpoint) Validate(request interface{}) error {
 }
 
 func (r userGroupToggleEndpoint) GetPath() string {
-	return "/usergroup/toggle"
+	return "/user/group/toggle"
 }
 
 func (r userGroupToggleEndpoint) HTTPRequest() interface{} {

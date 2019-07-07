@@ -4,6 +4,8 @@ import (
 	"fmt"
 	"strings"
 
+	"github.com/phassans/frolleague/common"
+
 	"github.com/phassans/frolleague/clients/phantom"
 	"github.com/phassans/frolleague/clients/rocket"
 	"github.com/rs/zerolog"
@@ -18,6 +20,7 @@ type (
 	}
 
 	UserEngine interface {
+		// old
 		SignUp(Username, Password, LinkedInURL) (User, error)
 		Login(Username, Password) (User, error)
 		Refresh(UserID) error
@@ -27,6 +30,10 @@ type (
 
 		GetUserChatGroups(UserID) ([]GroupWithStatus, error)
 		ToggleUserGroup(UserID, Group, bool) error
+
+		// new
+		GetSchoolsByUserID(userID UserID) ([]School, error)
+		GetCompaniesByUserID(userID UserID) ([]Company, error)
 	}
 )
 
@@ -204,6 +211,26 @@ func (u *userEngine) GetUserChatGroups(userID UserID) ([]GroupWithStatus, error)
 }
 
 func (u *userEngine) ToggleUserGroup(userID UserID, group Group, status bool) error {
+	_, err := u.dbEngine.GetUserByID(LinkedInUserID(userID))
+	if err != nil {
+		return err
+	}
+
+	groups, err := u.dbEngine.GetGroupsByUserID(userID)
+	if err != nil {
+		return err
+	}
+
+	isValidGroup := false
+	for _, g := range groups {
+		if g == group {
+			isValidGroup = true
+		}
+	}
+	if !isValidGroup {
+		return common.ErrorNotExist{"user group doesnt exist!"}
+	}
+
 	return u.dbEngine.ToggleUserGroup(userID, group, status)
 }
 
@@ -267,4 +294,12 @@ func (u *userEngine) addUserToCompanies(profile phantom.Profile, userID UserID) 
 
 func (u *userEngine) UpdateUserWithImage(userID UserID, imageLink ImageLink) error {
 	return u.dbEngine.UpdateUserWithImage(userID, imageLink)
+}
+
+func (u *userEngine) GetSchoolsByUserID(userID UserID) ([]School, error) {
+	return u.dbEngine.GetSchoolsByUserID(userID)
+}
+
+func (u *userEngine) GetCompaniesByUserID(userID UserID) ([]Company, error) {
+	return u.dbEngine.GetCompaniesByUserID(userID)
 }

@@ -44,7 +44,7 @@ func (r userGroupsEndpoint) Validate(request interface{}) error {
 }
 
 func (r userGroupsEndpoint) GetPath() string {
-	return "/usergroups"
+	return "/user/groups"
 }
 
 func (r userGroupsEndpoint) HTTPRequest() interface{} {
