@@ -9,8 +9,6 @@ type (
 
 	Password string
 
-	LinkedInURL string
-
 	SchoolName string
 
 	Degree string
