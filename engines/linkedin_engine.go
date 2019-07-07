@@ -80,7 +80,7 @@ func (l *linkedInEngine) LogIn(authCode linkedin.AuthCode, token linkedin.Access
 func (l *linkedInEngine) GetMe(userID linkedin.UserID) (linkedin.MeResponse, bool, error) {
 	token, err := l.dbEngine.GetTokenByUserID(LinkedInUserID(userID))
 	if err != nil {
-		return linkedin.MeResponse{}, false, nil
+		return linkedin.MeResponse{}, false, err
 	}
 
 	if token != "" {
@@ -102,7 +102,7 @@ func (l *linkedInEngine) CrawlUserProfile(UserID LinkedInUserID) (phantom.Profil
 	}
 
 	// get userProfile
-	profile, err := l.pClient.GetUserProfile(string(user.LinkedInURL), false)
+	profile, err := l.pClient.GetUserProfile(string(user.LinkedInURL), true)
 	if err != nil {
 		return phantom.Profile{}, err
 	}
@@ -163,5 +163,9 @@ func (l *linkedInEngine) addUserToCompanies(profile phantom.Profile, userID User
 }
 
 func (l *linkedInEngine) UpdateUserWithLinkedInURL(UserID LinkedInUserID, url LinkedInURL) error {
+	_, err := l.dbEngine.GetUserByID(UserID)
+	if err != nil {
+		return err
+	}
 	return l.dbEngine.UpdateUserWithLinkedInURL(UserID, url)
 }

@@ -51,11 +51,11 @@ var (
 		refresh,
 
 		// linkedIn
-		linkedInUserAuthCode,
-		linkedInLogIn,
-		linkedInUserURL,
-		linkedInUserCrawl,
-		fetchUser,
+		userLinkedInMe,
+		userLinkedInLogIn,
+		userLinkedInURL,
+		userLinkedInCrawl,
+		userInfo,
 	}
 )
 

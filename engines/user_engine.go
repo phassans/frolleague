@@ -4,6 +4,8 @@ import (
 	"fmt"
 	"strings"
 
+	"github.com/phassans/frolleague/common"
+
 	"github.com/phassans/frolleague/clients/phantom"
 	"github.com/phassans/frolleague/clients/rocket"
 	"github.com/rs/zerolog"
@@ -209,6 +211,26 @@ func (u *userEngine) GetUserChatGroups(userID UserID) ([]GroupWithStatus, error)
 }
 
 func (u *userEngine) ToggleUserGroup(userID UserID, group Group, status bool) error {
+	_, err := u.dbEngine.GetUserByID(LinkedInUserID(userID))
+	if err != nil {
+		return err
+	}
+
+	groups, err := u.dbEngine.GetGroupsByUserID(userID)
+	if err != nil {
+		return err
+	}
+
+	isValidGroup := false
+	for _, g := range groups {
+		if g == group {
+			isValidGroup = true
+		}
+	}
+	if !isValidGroup {
+		return common.ErrorNotExist{"user group doesnt exist!"}
+	}
+
 	return u.dbEngine.ToggleUserGroup(userID, group, status)
 }
 
