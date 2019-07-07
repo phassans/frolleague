@@ -30,7 +30,7 @@ var linkedInUserAuthCode postEndpoint = linkedInUserMeEndpoint{}
 func (r linkedInUserMeEndpoint) Execute(ctx context.Context, rtr *router, requestI interface{}) (interface{}, error) {
 	request := requestI.(linkedInUserMeRequest)
 	if err := r.Validate(requestI); err != nil {
-		return loginResponse{}, err
+		return linkedInUserMeResponse{}, err
 	}
 
 	meresp, ok, err := rtr.engines.GetMe(request.LinkedInId)
