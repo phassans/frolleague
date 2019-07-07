@@ -24,6 +24,8 @@ type (
 		SaveToken(userID LinkedInUserID, accessToken AccessToken) error
 		GetTokenByUserID(userID LinkedInUserID) (AccessToken, error)
 		UpdateUserWithToken(userID LinkedInUserID, token AccessToken) error
+		GetSchoolsByUserID(userID UserID) ([]School, error)
+		GetCompaniesByUserID(userID UserID) ([]Company, error)
 
 		// User Methods
 		AddUser(username Username, password Password, linkedInURL LinkedInURL) (UserID, error)
@@ -642,12 +644,14 @@ func (d *databaseEngine) schoolsToGroups(schools []School) []Group {
 		schoolName := strings.Replace(string(school.SchoolName), " ", "", -1)
 		grps = append(grps, Group(schoolName))
 
-		degree := strings.Replace(string(school.Degree), " ", "", -1)
-		fieldOfStudy := strings.Replace(string(school.FieldOfStudy), " ", "", -1)
+		if school.Degree != "" {
+			degree := strings.Replace(string(school.Degree), " ", "", -1)
+			fieldOfStudy := strings.Replace(string(school.FieldOfStudy), " ", "", -1)
 
-		// add combination of school, degree & fieldOfStudy
-		groupName := fmt.Sprintf("%s-%s-%s-%d-%d", schoolName, degree, fieldOfStudy, school.FromYear, school.ToYear)
-		grps = append(grps, Group(groupName))
+			// add combination of school, degree & fieldOfStudy
+			groupName := fmt.Sprintf("%s-%s-%s-%d-%d", schoolName, degree, fieldOfStudy, school.FromYear, school.ToYear)
+			grps = append(grps, Group(groupName))
+		}
 
 	}
 	return grps
@@ -661,10 +665,12 @@ func (d *databaseEngine) companiesToGroups(companies []Company) []Group {
 		companyName := strings.Replace(string(company.CompanyName), " ", "", -1)
 		grps = append(grps, Group(companyName))
 
-		location := strings.Replace(string(company.Location), " ", "", -1)
-		// add combination of companyName & location
-		groupName := fmt.Sprintf("%s-%s", companyName, location)
-		grps = append(grps, Group(groupName))
+		if company.Location != "" {
+			location := strings.Replace(string(company.Location), " ", "", -1)
+			// add combination of companyName & location
+			groupName := fmt.Sprintf("%s-%s", companyName, location)
+			grps = append(grps, Group(groupName))
+		}
 
 	}
 	return grps

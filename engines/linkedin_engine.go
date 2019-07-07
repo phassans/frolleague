@@ -102,7 +102,7 @@ func (l *linkedInEngine) CrawlUserProfile(UserID LinkedInUserID) (phantom.Profil
 	}
 
 	// get userProfile
-	profile, err := l.pClient.GetUserProfile(string(user.LinkedInURL), true)
+	profile, err := l.pClient.GetUserProfile(string(user.LinkedInURL), false)
 	if err != nil {
 		return phantom.Profile{}, err
 	}

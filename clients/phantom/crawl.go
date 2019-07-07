@@ -11,7 +11,7 @@ import (
 )
 
 const (
-	jsonFile = "response.json"
+	jsonFile = "response1.json"
 )
 
 func (c *client) CrawlUrl(linkedInURL string, file bool) (CrawlResponse, error) {
@@ -118,12 +118,19 @@ func (c *client) GetSchoolsFromResponse(resp CrawlResponse) ([]School, error) {
 	var schools []School
 	for _, obj := range resp.Data.ResultObject {
 		for _, school := range obj.Schools {
-			from, to, err := parseDateRangeForSchool(school.DateRange)
-			if err != nil {
-				return nil, err
+			if school.SchoolName != "" {
+				var fYear FromYear
+				var tYear ToYear
+				var err error
+				if school.DateRange != "" {
+					fYear, tYear, err = parseDateRangeForSchool(school.DateRange)
+					if err != nil {
+						return nil, err
+					}
+				}
+				s := School{SchoolName(removeSpecialChars(school.SchoolName)), Degree(removeSpecialChars(school.Degree)), FieldOfStudy(removeSpecialChars(school.DegreeSpec)), fYear, tYear}
+				schools = append(schools, s)
 			}
-			s := School{SchoolName(removeSpecialChars(school.SchoolName)), Degree(removeSpecialChars(school.Degree)), FieldOfStudy(removeSpecialChars(school.DegreeSpec)), from, to}
-			schools = append(schools, s)
 		}
 	}
 	return schools, nil

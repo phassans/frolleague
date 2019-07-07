@@ -49,9 +49,6 @@ type (
 
 	Company struct {
 		CompanyName CompanyName
-		FromYear    FromYear
-		ToYear      ToYear
-		Title       Title
 		Location    Location
 	}
 

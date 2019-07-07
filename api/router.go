@@ -55,6 +55,7 @@ var (
 		linkedInLogIn,
 		linkedInUserURL,
 		linkedInUserCrawl,
+		fetchUser,
 	}
 )
 
