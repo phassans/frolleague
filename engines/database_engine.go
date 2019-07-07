@@ -17,6 +17,14 @@ type (
 	}
 
 	DatabaseEngine interface {
+		// DBMethods
+		SaveUser(LinkedInUserID, FirstName, LastName, LinkedInImage) error
+		GetUserByID(UserID LinkedInUserID) (LinkedInUser, error)
+		UpdateUserWithLinkedInURL(LinkedInUserID, LinkedInURL) error
+		SaveToken(userID LinkedInUserID, accessToken AccessToken) error
+		GetTokenByUserID(userID LinkedInUserID) (AccessToken, error)
+		UpdateUserWithToken(userID LinkedInUserID, token AccessToken) error
+
 		// User Methods
 		AddUser(username Username, password Password, linkedInURL LinkedInURL) (UserID, error)
 		DeleteUser(username Username) error
@@ -58,16 +66,126 @@ func NewDatabaseEngine(psql *sql.DB, logger zerolog.Logger) DatabaseEngine {
 	return &databaseEngine{psql, logger}
 }
 
+func (l *databaseEngine) SaveUser(UserID LinkedInUserID, firstName FirstName, lastName LastName, linkedInImage LinkedInImage) error {
+	user, err := l.GetUserByID(UserID)
+	if err != nil {
+		if _, ok := err.(common.ErrorUserNotExist); !ok {
+			return err
+		}
+	}
+	if user.UserID != "" {
+		return common.DuplicateLinkedInUser{LinkedInUserID: string(UserID), Message: fmt.Sprintf("user with userID: %v already exists", UserID)}
+	}
+
+	return l.doSaveUser(UserID, firstName, lastName, linkedInImage)
+}
+
+func (l *databaseEngine) GetUserByID(UserID LinkedInUserID) (LinkedInUser, error) {
+	var user LinkedInUser
+	var sqlLinkedInURL sql.NullString
+	rows := l.sql.QueryRow("SELECT user_id,url FROM linkedin_user WHERE user_id = $1", UserID)
+
+	switch err := rows.Scan(&user.UserID, &sqlLinkedInURL); err {
+	case sql.ErrNoRows:
+		return LinkedInUser{}, common.ErrorUserNotExist{Message: fmt.Sprintf("user doesnt exist")}
+	case nil:
+		user.LinkedInURL = LinkedInURL(sqlLinkedInURL.String)
+		return user, nil
+	default:
+		return LinkedInUser{}, common.DatabaseError{DBError: err.Error()}
+	}
+}
+
+func (l *databaseEngine) doSaveUser(UserID LinkedInUserID, firstName FirstName, lastName LastName, linkedInImage LinkedInImage) error {
+	_, err := l.sql.Exec("INSERT INTO linkedin_user(user_id, first_name, last_name, picture, insert_time) "+
+		"VALUES($1,$2,$3,$4,$5)", UserID, firstName, lastName, linkedInImage, time.Now())
+	if err != nil {
+		return common.DatabaseError{DBError: err.Error()}
+	}
+
+	l.logger.Info().Msgf("successfully saved a linkedIn user with UserID: %s", UserID)
+	return nil
+}
+
+func (l *databaseEngine) UpdateUserWithLinkedInURL(UserID LinkedInUserID, url LinkedInURL) error {
+	updateWithURL := `UPDATE linkedin_user SET url = $1 WHERE user_id=$2;`
+
+	_, err := l.sql.Exec(updateWithURL, url, UserID)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+func (l *databaseEngine) SaveToken(userID LinkedInUserID, accessToken AccessToken) error {
+	dbToken, err := l.GetTokenByUserID(userID)
+	if err != nil {
+		switch err.(type) {
+		case common.ErrorNotExist:
+			if err := l.doSaveToken(userID, accessToken); err != nil {
+				return err
+			}
+		default:
+			return err
+		}
+		return nil
+	}
+
+	if dbToken != "" {
+		if err := l.UpdateUserWithToken(userID, accessToken); err != nil {
+			return err
+		}
+		l.logger.Info().Msgf("saved token for userID: %s", userID)
+	}
+
+	return nil
+}
+
+func (l *databaseEngine) doSaveToken(userID LinkedInUserID, token AccessToken) error {
+	_, err := l.sql.Exec("INSERT INTO linkedin_user_token(user_id, token, insert_time) "+
+		"VALUES($1,$2,$3)", userID, token, time.Now())
+	if err != nil {
+		return common.DatabaseError{DBError: err.Error()}
+	}
+
+	l.logger.Info().Msgf("successfully saved token for user with UserID: %s", userID)
+	return nil
+}
+
+func (l *databaseEngine) GetTokenByUserID(userID LinkedInUserID) (AccessToken, error) {
+	var token AccessToken
+	rows := l.sql.QueryRow("SELECT token FROM linkedin_user_token WHERE user_id = $1", userID)
+
+	switch err := rows.Scan(&token); err {
+	case sql.ErrNoRows:
+		return AccessToken(""), common.ErrorNotExist{Message: fmt.Sprintf("user token doesnt exist")}
+	case nil:
+		return token, nil
+	default:
+		return AccessToken(""), common.DatabaseError{DBError: err.Error()}
+	}
+}
+
+func (l *databaseEngine) UpdateUserWithToken(userID LinkedInUserID, token AccessToken) error {
+	updateWithToken := `UPDATE linkedin_user_token SET token = $1 WHERE user_id=$2;`
+
+	_, err := l.sql.Exec(updateWithToken, token, userID)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
 func (d *databaseEngine) AddUser(username Username, password Password, linkedInURL LinkedInURL) (UserID, error) {
 	user, err := d.GetUserByLinkedInURL(linkedInURL)
 	if err != nil {
 		if _, ok := err.(common.ErrorUserNotExist); !ok {
-			return 0, err
+			return "", err
 		}
 	}
 
-	if user.UserID != 0 {
-		return 0, common.DuplicateSignUp{Username: string(user.Username), LinkedInURL: string(linkedInURL), Message: fmt.Sprintf("user with linkedingURL already exists")}
+	if user.UserID != "" {
+		return "", common.DuplicateSignUp{Username: string(user.Username), LinkedInURL: string(linkedInURL), Message: fmt.Sprintf("user with linkedingURL already exists")}
 	}
 	return d.doAddUser(username, password, linkedInURL)
 }
@@ -77,10 +195,10 @@ func (d *databaseEngine) doAddUser(username Username, password Password, linkedI
 	err := d.sql.QueryRow("INSERT INTO viraagh_user(username,password,linkedIn_URL,insert_time) "+
 		"VALUES($1,$2,$3,$4) returning user_id;", username, password, linkedInURL, time.Now()).Scan(&userID)
 	if err != nil {
-		return 0, common.DatabaseError{DBError: err.Error()}
+		return "", common.DatabaseError{DBError: err.Error()}
 	}
 
-	d.logger.Info().Msgf("successfully added a user with ID: %d", userID)
+	d.logger.Info().Msgf("successfully added a user with ID: %s", userID)
 
 	return userID, nil
 }
@@ -280,7 +398,7 @@ func (d *databaseEngine) AddUserToSchool(userID UserID, schoolID SchoolID, fromY
 		if err != nil {
 			return common.DatabaseError{DBError: err.Error()}
 		}
-		d.logger.Info().Msgf("successfully added a user: %d to school: %d", userID, schoolID)
+		d.logger.Info().Msgf("successfully added a user: %s to school: %d", userID, schoolID)
 	}
 
 	return nil
@@ -306,7 +424,7 @@ func (d *databaseEngine) RemoveUserFromSchool(userID UserID, schoolID SchoolID) 
 		return common.DatabaseError{DBError: err.Error()}
 	}
 
-	d.logger.Info().Msgf("successfully removed user: %d from school: %d", userID, schoolID)
+	d.logger.Info().Msgf("successfully removed user: %s from school: %d", userID, schoolID)
 	return nil
 }
 
@@ -345,7 +463,7 @@ func (d *databaseEngine) AddUserToCompany(userID UserID, companyID CompanyID, ti
 			userID, companyID, title, fromYear, toYear, time.Now()); err != nil {
 			return common.DatabaseError{DBError: err.Error()}
 		}
-		d.logger.Info().Msgf("successfully added a user: %d to company: %d", userID, companyID)
+		d.logger.Info().Msgf("successfully added a user: %s to company: %d", userID, companyID)
 	}
 
 	return nil
@@ -371,7 +489,7 @@ func (d *databaseEngine) RemoveUserFromCompany(userID UserID, companyID CompanyI
 		return common.DatabaseError{DBError: err.Error()}
 	}
 
-	d.logger.Info().Msgf("successfully removed user: %d from company: %d", userID, companyID)
+	d.logger.Info().Msgf("successfully removed user: %s from company: %d", userID, companyID)
 	return nil
 }
 
@@ -419,7 +537,7 @@ func (d *databaseEngine) AddGroupsToUser(userID UserID) ([]Group, error) {
 			grpMap[group] = true
 			uniqGroups = append(uniqGroups, group)
 
-			d.logger.Info().Msgf("user with ID:%d joined group: %s", userID, group)
+			d.logger.Info().Msgf("user with ID:%s joined group: %s", userID, group)
 		}
 	}
 
@@ -448,7 +566,7 @@ func (d *databaseEngine) ToggleUserGroup(userID UserID, group Group, status bool
 		return err
 	}
 
-	d.logger.Info().Msgf("user with ID:%d removed from group: %s", userID, group)
+	d.logger.Info().Msgf("user with ID:%s removed from group: %s", userID, group)
 	return nil
 }
 

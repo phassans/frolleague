@@ -7,6 +7,7 @@ const (
 	testDatabaseUsername = "pshashidhara"
 	testDatabasePassword = "banana123"
 
+	testUserID          UserID      = "fhVq011uDC"
 	testUserFirstName   FirstName   = "Pramod"
 	testUserLastName    LastName    = "HS"
 	testUserName        Username    = "Viraagh"

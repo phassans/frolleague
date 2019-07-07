@@ -37,7 +37,7 @@ func (r userGroupsEndpoint) Execute(ctx context.Context, rtr *router, requestI i
 
 func (r userGroupsEndpoint) Validate(request interface{}) error {
 	input := request.(userGroupsRequest)
-	if input.UserID == 0 {
+	if input.UserID == "" {
 		return common.ValidationError{Message: fmt.Sprint("invalid UserID for userGroups")}
 	}
 	return nil
