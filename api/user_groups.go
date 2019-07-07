@@ -27,7 +27,7 @@ var userGroups postEndpoint = userGroupsEndpoint{}
 func (r userGroupsEndpoint) Execute(ctx context.Context, rtr *router, requestI interface{}) (interface{}, error) {
 	request := requestI.(userGroupsRequest)
 	if err := r.Validate(requestI); err != nil {
-		return loginResponse{}, err
+		return userGroupsResponse{}, err
 	}
 
 	groups, err := rtr.engines.GetUserChatGroups(request.UserID)

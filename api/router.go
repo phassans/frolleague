@@ -46,13 +46,9 @@ var (
 
 	// createEndpoints lists POST endpoints that create records.
 	formEndpoints = []postEndpoint{
-		signUp,
-		login,
 		userGroups,
 		userGroupToggle,
 		refresh,
-		userChangePwd,
-		userDelete,
 
 		// linkedIn
 		linkedInUserAuthCode,
@@ -91,10 +87,6 @@ func NewRESTRouter(engines engines.Engine) http.Handler {
 				r.Get(endpoint.GetPath(), rtr.newGetHandler(endpoint))
 			})
 		}
-
-		r.Group(func(r chi.Router) {
-			r.Post("/uploadimage", rtr.newImageHandler())
-		})
 
 		for _, endpoint := range formEndpoints {
 			r.Group(func(r chi.Router) {

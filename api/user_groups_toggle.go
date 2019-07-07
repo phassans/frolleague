@@ -29,7 +29,7 @@ var userGroupToggle postEndpoint = userGroupToggleEndpoint{}
 func (r userGroupToggleEndpoint) Execute(ctx context.Context, rtr *router, requestI interface{}) (interface{}, error) {
 	request := requestI.(userGroupToggleRequest)
 	if err := r.Validate(requestI); err != nil {
-		return loginResponse{}, err
+		return userGroupToggleResponse{}, err
 	}
 
 	err := rtr.engines.ToggleUserGroup(request.UserID, request.Group, request.Status)

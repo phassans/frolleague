@@ -27,7 +27,7 @@ var linkedInUserURL postEndpoint = linkedInUserURLEndpoint{}
 func (r linkedInUserURLEndpoint) Execute(ctx context.Context, rtr *router, requestI interface{}) (interface{}, error) {
 	request := requestI.(linkedInUserURLRequest)
 	if err := r.Validate(requestI); err != nil {
-		return loginResponse{}, err
+		return linkedInUserURLResponse{}, err
 	}
 
 	err := rtr.engines.UpdateUserWithLinkedInURL(request.LinkedInUserID, request.LinkedInURL)

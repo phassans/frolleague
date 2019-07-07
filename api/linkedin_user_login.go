@@ -29,7 +29,7 @@ var linkedInLogIn postEndpoint = linkedInLogInEndpoint{}
 func (r linkedInLogInEndpoint) Execute(ctx context.Context, rtr *router, requestI interface{}) (interface{}, error) {
 	request := requestI.(linkedInLogInRequest)
 	if err := r.Validate(requestI); err != nil {
-		return loginResponse{}, err
+		return linkedInLogInResponse{}, err
 	}
 
 	resp, err := rtr.engines.LogIn(request.AuthCode, request.AccessToken)
