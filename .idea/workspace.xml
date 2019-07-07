@@ -1,0 +1,364 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ChangeListManager">
+    <list default="true" id="7dddda05-39e1-4928-b0c4-f7fd62f3c6e6" name="Default Changelist" comment="">
+      <change afterPath="$PROJECT_DIR$/.env" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/frolleague.iml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/modules.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/vcs.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Gopkg.lock" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Gopkg.toml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/api/api_error.go" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/api/get.go" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/api/linkedin_user_login.go" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/api/linkedin_user_me.go" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/api/linkedin_user_url.go" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/api/post.go" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/api/router.go" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/api/user_change_pwd.go" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/api/user_delete.go" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/api/user_groups.go" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/api/user_groups_toggle.go" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/api/user_image_upload.go" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/api/user_login.go" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/api/user_refresh.go" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/api/user_signup.go" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/commands" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/common/errors.go" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/common/middleware.go" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/common/types.go" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/configs.go" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/db/database.go" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/engines/database_engine.go" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/engines/database_engine_test.go" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/engines/db_types.go" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/engines/engine.go" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/engines/helper_test.go" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/engines/linkedin_engine.go" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/engines/linkedin_types.go" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/engines/user_engine.go" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/engines/user_engine_test.go" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/env_variables.go" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/main.go" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/response.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/route/routes.go" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/script/start.sh" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/sql/cleanup.sql" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/sql/setup.sql" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/upload_images/565da656-91da-45bd-88a0-59c8f9db2714.JPG" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/upload_images/IMG_9614.JPG" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/upload_images/Silicon-Valley-real-estate-The-Registry.jpg" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/upload_images/app icon 152x152.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/upload_images/menu dropdown 2.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/user_data/..66ff54d6-7009-496a-59c1-23ff135aaa6e.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/user_data/Diana.Levan.94568d8f-e6d6-4ea3-47d9-e850f25618b6.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/user_data/Diana.Levan.d333489a-bf81-471b-6a9d-3753524973b1.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/user_data/Pramod.Shashidhara.3f8e265e-e90d-427b-635b-d871cdcf0343.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/user_data/Pramod.Shashidhara.d3e76177-8e68-4ea4-5755-669a4f082fc9.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/user_data/Pramod.Shashidhara.ffbb76b4-3c24-4a27-6144-b0db45dd7bd0.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/user_data/Priya.Shashidhara.712acff2-ef38-4b2c-64ba-de8074e0a8af.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/user_data/Swaroop.Shivakumar.5a4c4780-8d0a-4a16-7a89-d27557454171.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/user_data/Swaroop.Shivakumar.f63e7e29-b4b3-4832-51cb-028aabe8b4ec.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/user_data/response.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/user_data/temp" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/vendor/github.com/NYTimes/gziphandler/.gitignore" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/vendor/github.com/NYTimes/gziphandler/.travis.yml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/vendor/github.com/NYTimes/gziphandler/CODE_OF_CONDUCT.md" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/vendor/github.com/NYTimes/gziphandler/CONTRIBUTING.md" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/vendor/github.com/NYTimes/gziphandler/LICENSE" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/vendor/github.com/NYTimes/gziphandler/README.md" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/vendor/github.com/NYTimes/gziphandler/go.mod" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/vendor/github.com/NYTimes/gziphandler/go.sum" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/vendor/github.com/NYTimes/gziphandler/gzip.go" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/vendor/github.com/NYTimes/gziphandler/gzip_go18.go" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/vendor/github.com/afex/hystrix-go/LICENSE" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/vendor/github.com/afex/hystrix-go/hystrix/circuit.go" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/vendor/github.com/afex/hystrix-go/hystrix/doc.go" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/vendor/github.com/afex/hystrix-go/hystrix/eventstream.go" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/vendor/github.com/afex/hystrix-go/hystrix/hystrix.go" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/vendor/github.com/afex/hystrix-go/hystrix/logger.go" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/vendor/github.com/afex/hystrix-go/hystrix/metric_collector/default_metric_collector.go" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/vendor/github.com/afex/hystrix-go/hystrix/metric_collector/metric_collector.go" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/vendor/github.com/afex/hystrix-go/hystrix/metrics.go" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/vendor/github.com/afex/hystrix-go/hystrix/pool.go" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/vendor/github.com/afex/hystrix-go/hystrix/pool_metrics.go" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/vendor/github.com/afex/hystrix-go/hystrix/rolling/rolling.go" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/vendor/github.com/afex/hystrix-go/hystrix/rolling/rolling_timing.go" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/vendor/github.com/afex/hystrix-go/hystrix/settings.go" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/vendor/github.com/davecgh/go-spew/LICENSE" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/vendor/github.com/davecgh/go-spew/spew/bypass.go" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/vendor/github.com/davecgh/go-spew/spew/bypasssafe.go" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/vendor/github.com/davecgh/go-spew/spew/common.go" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/vendor/github.com/davecgh/go-spew/spew/config.go" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/vendor/github.com/davecgh/go-spew/spew/doc.go" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/vendor/github.com/davecgh/go-spew/spew/dump.go" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/vendor/github.com/davecgh/go-spew/spew/format.go" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/vendor/github.com/davecgh/go-spew/spew/spew.go" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/vendor/github.com/go-chi/chi/.gitignore" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/vendor/github.com/go-chi/chi/.travis.yml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/vendor/github.com/go-chi/chi/CHANGELOG.md" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/vendor/github.com/go-chi/chi/CONTRIBUTING.md" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/vendor/github.com/go-chi/chi/LICENSE" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/vendor/github.com/go-chi/chi/README.md" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/vendor/github.com/go-chi/chi/chain.go" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/vendor/github.com/go-chi/chi/chi.go" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/vendor/github.com/go-chi/chi/context.go" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/vendor/github.com/go-chi/chi/mux.go" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/vendor/github.com/go-chi/chi/tree.go" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/vendor/github.com/joho/godotenv/.gitignore" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/vendor/github.com/joho/godotenv/.travis.yml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/vendor/github.com/joho/godotenv/LICENCE" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/vendor/github.com/joho/godotenv/README.md" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/vendor/github.com/joho/godotenv/godotenv.go" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/vendor/github.com/lib/pq/.gitignore" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/vendor/github.com/lib/pq/.travis.sh" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/vendor/github.com/lib/pq/.travis.yml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/vendor/github.com/lib/pq/CONTRIBUTING.md" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/vendor/github.com/lib/pq/LICENSE.md" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/vendor/github.com/lib/pq/README.md" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/vendor/github.com/lib/pq/TESTS.md" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/vendor/github.com/lib/pq/array.go" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/vendor/github.com/lib/pq/buf.go" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/vendor/github.com/lib/pq/conn.go" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/vendor/github.com/lib/pq/conn_go18.go" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/vendor/github.com/lib/pq/connector.go" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/vendor/github.com/lib/pq/copy.go" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/vendor/github.com/lib/pq/doc.go" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/vendor/github.com/lib/pq/encode.go" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/vendor/github.com/lib/pq/error.go" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/vendor/github.com/lib/pq/go.mod" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/vendor/github.com/lib/pq/notify.go" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/vendor/github.com/lib/pq/oid/doc.go" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/vendor/github.com/lib/pq/oid/gen.go" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/vendor/github.com/lib/pq/oid/types.go" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/vendor/github.com/lib/pq/rows.go" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/vendor/github.com/lib/pq/scram/scram.go" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/vendor/github.com/lib/pq/ssl.go" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/vendor/github.com/lib/pq/ssl_permissions.go" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/vendor/github.com/lib/pq/ssl_windows.go" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/vendor/github.com/lib/pq/url.go" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/vendor/github.com/lib/pq/user_posix.go" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/vendor/github.com/lib/pq/user_windows.go" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/vendor/github.com/lib/pq/uuid.go" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/vendor/github.com/nu7hatch/gouuid/.gitignore" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/vendor/github.com/nu7hatch/gouuid/COPYING" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/vendor/github.com/nu7hatch/gouuid/README.md" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/vendor/github.com/nu7hatch/gouuid/uuid.go" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/vendor/github.com/pkg/errors/.gitignore" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/vendor/github.com/pkg/errors/.travis.yml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/vendor/github.com/pkg/errors/LICENSE" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/vendor/github.com/pkg/errors/README.md" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/vendor/github.com/pkg/errors/appveyor.yml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/vendor/github.com/pkg/errors/errors.go" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/vendor/github.com/pkg/errors/stack.go" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/vendor/github.com/pmezard/go-difflib/LICENSE" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/vendor/github.com/pmezard/go-difflib/difflib/difflib.go" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/vendor/github.com/rs/cors/.travis.yml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/vendor/github.com/rs/cors/LICENSE" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/vendor/github.com/rs/cors/README.md" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/vendor/github.com/rs/cors/cors.go" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/vendor/github.com/rs/cors/go.mod" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/vendor/github.com/rs/cors/utils.go" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/vendor/github.com/rs/zerolog/.gitignore" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/vendor/github.com/rs/zerolog/.travis.yml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/vendor/github.com/rs/zerolog/CNAME" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/vendor/github.com/rs/zerolog/LICENSE" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/vendor/github.com/rs/zerolog/README.md" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/vendor/github.com/rs/zerolog/_config.yml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/vendor/github.com/rs/zerolog/array.go" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/vendor/github.com/rs/zerolog/console.go" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/vendor/github.com/rs/zerolog/context.go" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/vendor/github.com/rs/zerolog/ctx.go" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/vendor/github.com/rs/zerolog/encoder.go" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/vendor/github.com/rs/zerolog/encoder_cbor.go" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/vendor/github.com/rs/zerolog/encoder_json.go" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/vendor/github.com/rs/zerolog/event.go" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/vendor/github.com/rs/zerolog/fields.go" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/vendor/github.com/rs/zerolog/globals.go" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/vendor/github.com/rs/zerolog/go.mod" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/vendor/github.com/rs/zerolog/go112.go" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/vendor/github.com/rs/zerolog/hook.go" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/vendor/github.com/rs/zerolog/internal/cbor/README.md" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/vendor/github.com/rs/zerolog/internal/cbor/base.go" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/vendor/github.com/rs/zerolog/internal/cbor/cbor.go" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/vendor/github.com/rs/zerolog/internal/cbor/decode_stream.go" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/vendor/github.com/rs/zerolog/internal/cbor/string.go" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/vendor/github.com/rs/zerolog/internal/cbor/time.go" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/vendor/github.com/rs/zerolog/internal/cbor/types.go" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/vendor/github.com/rs/zerolog/internal/json/base.go" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/vendor/github.com/rs/zerolog/internal/json/bytes.go" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/vendor/github.com/rs/zerolog/internal/json/string.go" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/vendor/github.com/rs/zerolog/internal/json/time.go" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/vendor/github.com/rs/zerolog/internal/json/types.go" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/vendor/github.com/rs/zerolog/log.go" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/vendor/github.com/rs/zerolog/not_go112.go" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/vendor/github.com/rs/zerolog/pretty.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/vendor/github.com/rs/zerolog/sampler.go" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/vendor/github.com/rs/zerolog/syslog.go" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/vendor/github.com/rs/zerolog/writer.go" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/vendor/github.com/stretchr/testify/LICENSE" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/vendor/github.com/stretchr/testify/assert/assertion_format.go" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/vendor/github.com/stretchr/testify/assert/assertion_format.go.tmpl" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/vendor/github.com/stretchr/testify/assert/assertion_forward.go" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/vendor/github.com/stretchr/testify/assert/assertion_forward.go.tmpl" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/vendor/github.com/stretchr/testify/assert/assertions.go" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/vendor/github.com/stretchr/testify/assert/doc.go" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/vendor/github.com/stretchr/testify/assert/errors.go" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/vendor/github.com/stretchr/testify/assert/forward_assertions.go" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/vendor/github.com/stretchr/testify/assert/http_assertions.go" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/vendor/github.com/stretchr/testify/require/doc.go" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/vendor/github.com/stretchr/testify/require/forward_requirements.go" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/vendor/github.com/stretchr/testify/require/require.go" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/vendor/github.com/stretchr/testify/require/require.go.tmpl" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/vendor/github.com/stretchr/testify/require/require_forward.go" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/vendor/github.com/stretchr/testify/require/require_forward.go.tmpl" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/vendor/github.com/stretchr/testify/require/requirements.go" afterDir="false" />
+    </list>
+    <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="FileEditorManager">
+    <leaf>
+      <file pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/main.go">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="137">
+              <caret line="76" column="34" selection-start-line="76" selection-start-column="34" selection-end-line="76" selection-end-column="34" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+    </leaf>
+  </component>
+  <component name="FindInProjectRecents">
+    <findStrings>
+      <find>ExVille</find>
+    </findStrings>
+  </component>
+  <component name="GOROOT" path="/usr/local/Cellar/go/1.11.5/libexec" />
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="IdeDocumentHistory">
+    <option name="CHANGED_PATHS">
+      <list>
+        <option value="$PROJECT_DIR$/main.go" />
+      </list>
+    </option>
+  </component>
+  <component name="ProjectConfigurationFiles">
+    <option name="files">
+      <list>
+        <option value="$PROJECT_DIR$/.idea/frolleague.iml" />
+        <option value="$PROJECT_DIR$/.idea/misc.xml" />
+        <option value="$PROJECT_DIR$/.idea/modules.xml" />
+        <option value="$PROJECT_DIR$/.idea/vcs.xml" />
+      </list>
+    </option>
+  </component>
+  <component name="ProjectFrameBounds">
+    <option name="y" value="23" />
+    <option name="width" value="1440" />
+    <option name="height" value="822" />
+  </component>
+  <component name="ProjectView">
+    <navigator proportions="" version="1">
+      <foldersAlwaysOnTop value="true" />
+    </navigator>
+    <panes>
+      <pane id="Scope" />
+      <pane id="ProjectPane">
+        <subPane>
+          <expand>
+            <path>
+              <item name="frolleague" type="b2602c69:ProjectViewProjectNode" />
+              <item name="frolleague" type="462c0819:PsiDirectoryNode" />
+            </path>
+          </expand>
+          <select />
+        </subPane>
+      </pane>
+    </panes>
+  </component>
+  <component name="PropertiesComponent">
+    <property name="SHARE_PROJECT_CONFIGURATION_FILES" value="true" />
+    <property name="WebServerToolWindowFactoryState" value="false" />
+    <property name="go.gopath.indexing.explicitly.defined" value="true" />
+    <property name="go.import.settings.migrated" value="true" />
+    <property name="go.sdk.automatically.set" value="true" />
+    <property name="go.vendoring.notification.had.been.shown" value="true" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$" />
+    <property name="nodejs_interpreter_path.stuck_in_default_project" value="undefined stuck path" />
+    <property name="nodejs_npm_path_reset_for_default_project" value="true" />
+  </component>
+  <component name="RunDashboard">
+    <option name="ruleStates">
+      <list>
+        <RuleState>
+          <option name="name" value="ConfigurationTypeDashboardGroupingRule" />
+        </RuleState>
+        <RuleState>
+          <option name="name" value="StatusDashboardGroupingRule" />
+        </RuleState>
+      </list>
+    </option>
+  </component>
+  <component name="RunManager">
+    <configuration name="go build github.com/phassans/frolleague" type="GoApplicationRunConfiguration" factoryName="Go Application" temporary="true" nameIsGenerated="true">
+      <module name="frolleague" />
+      <working_directory value="$PROJECT_DIR$/" />
+      <kind value="PACKAGE" />
+      <filePath value="$PROJECT_DIR$/" />
+      <package value="github.com/phassans/frolleague" />
+      <directory value="$PROJECT_DIR$/" />
+      <method v="2" />
+    </configuration>
+    <recent_temporary>
+      <list>
+        <item itemvalue="Go Build.go build github.com/phassans/frolleague" />
+      </list>
+    </recent_temporary>
+  </component>
+  <component name="ToolWindowManager">
+    <frame x="0" y="23" width="1440" height="822" extended-state="0" />
+    <editor active="true" />
+    <layout>
+      <window_info id="Favorites" side_tool="true" />
+      <window_info content_ui="combo" id="Project" order="0" visible="true" weight="0.24964234" />
+      <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
+      <window_info anchor="bottom" id="Docker" show_stripe_button="false" />
+      <window_info anchor="bottom" id="Database Changes" />
+      <window_info anchor="bottom" id="Version Control" />
+      <window_info anchor="bottom" id="Terminal" />
+      <window_info anchor="bottom" id="Event Log" side_tool="true" />
+      <window_info anchor="bottom" id="Message" order="0" />
+      <window_info anchor="bottom" id="Find" order="1" />
+      <window_info active="true" anchor="bottom" id="Run" order="2" visible="true" weight="0.32876712" />
+      <window_info anchor="bottom" id="Debug" order="3" weight="0.4" />
+      <window_info anchor="bottom" id="Cvs" order="4" weight="0.25" />
+      <window_info anchor="bottom" id="Inspection" order="5" weight="0.4" />
+      <window_info anchor="bottom" id="TODO" order="6" />
+      <window_info anchor="right" id="Database" />
+      <window_info anchor="right" id="Commander" internal_type="SLIDING" order="0" type="SLIDING" weight="0.4" />
+      <window_info anchor="right" id="Ant Build" order="1" weight="0.25" />
+      <window_info anchor="right" content_ui="combo" id="Hierarchy" order="2" weight="0.25" />
+    </layout>
+  </component>
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="1" />
+  </component>
+  <component name="editorHistoryManager">
+    <entry file="file://$PROJECT_DIR$/main.go">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="137">
+          <caret line="76" column="34" selection-start-line="76" selection-start-column="34" selection-end-line="76" selection-end-column="34" />
+        </state>
+      </provider>
+    </entry>
+  </component>
+</project>

@@ -1,0 +1,3 @@
+psql -h localhost -d viraagh -U pshashidhara
+psql -h localhost -d viraagh -U pshashidhara -a -f sql/cleanup.sql
+psql -h localhost -d viraagh -U pshashidhara -a -f sql/setup.sql

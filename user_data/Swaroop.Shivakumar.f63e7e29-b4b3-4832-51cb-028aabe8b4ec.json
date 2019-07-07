@@ -1,0 +1,197 @@
+{
+  "status": "success",
+  "message": "Agent finished (success)",
+  "data": {
+    "containerId": 48080113,
+    "executionTime": 18,
+    "exitCode": 0,
+    "resultObject": [
+      {
+        "general": {
+          "imgUrl": "https://media.licdn.com/dms/image/C5103AQE8eWWPlQzLiw/profile-displayphoto-shrink_800_800/0?e=1556755200\u0026v=beta\u0026t=uid_HFf3ZikPcf7vxbeby3C-0Vy9re1cx8NZgtEhu6M",
+          "fullName": "Swaroop Shivakumar",
+          "headline": "Principal Software Engineer at Microsoft",
+          "company": "Microsoft",
+          "school": "Manipal Academy of Higher Education",
+          "location": "Redmond, Washington",
+          "connections": "256",
+          "profileUrl": "https://www.linkedin.com/in/swaroop-shivakumar/",
+          "connectionDegree": "1st",
+          "vmid": "ACoAAABFW5kBZvbssXH70ZjxAUzT64_2sWnhRj4",
+          "description": "Experienced Software Engineer/Architect with a demonstrated history of working in the computer software industry. Strong engineering professional skilled in Design and Architecture of medium scale, business critical online services/application and languages like C#/.NET, Javascript and C++.",
+          "firstName": "Swaroop",
+          "lastName": "Shivakumar"
+        },
+        "jobs": [
+          {
+            "companyName": "Microsoft",
+            "companyUrl": "https://www.linkedin.com/company/1035/",
+            "jobTitle": "Principal Software Engineer",
+            "dateRange": "Sep 2015 – Present",
+            "location": "",
+            "description": null
+          },
+          {
+            "companyName": "Microsoft",
+            "companyUrl": "https://www.linkedin.com/company/1035/",
+            "jobTitle": "Senior Software Engineer - Online Payments Service",
+            "dateRange": "Mar 2014 – Sep 2015",
+            "location": "Redmond, WA, USA",
+            "description": null
+          },
+          {
+            "companyName": "Microsoft",
+            "companyUrl": "https://www.linkedin.com/company/1035/",
+            "jobTitle": "Senior SDET Lead - Windows OS Manageability",
+            "dateRange": "Nov 2011 – Mar 2014",
+            "location": "Redmond, WA, USA",
+            "description": null
+          },
+          {
+            "companyName": "Microsoft",
+            "companyUrl": "https://www.linkedin.com/company/1035/",
+            "jobTitle": "Senior SDET Lead - Windows OS Performance",
+            "dateRange": "Nov 2006 – Nov 2011",
+            "location": "Redmond, WA",
+            "description": null
+          },
+          {
+            "companyName": "Microsoft",
+            "companyUrl": "https://www.linkedin.com/company/1035/",
+            "jobTitle": "Software Developer - PC Application",
+            "dateRange": "Apr 2005 – Nov 2006",
+            "location": "Redmond, WA, USA",
+            "description": null
+          },
+          {
+            "companyName": "Lear Corporation",
+            "companyUrl": "https://www.linkedin.com/company/3701/",
+            "jobTitle": "Software Design Engineer - Test Equipment",
+            "dateRange": "Jun 2004 – Apr 2005",
+            "location": "",
+            "description": null
+          },
+          {
+            "companyName": "Larsen \u0026 Toubro Limited - Embedded Systems \u0026 Software",
+            "companyUrl": "https://www.linkedin.com/search/results/index/?keywords=Larsen%20%26%20Toubro%20Limited%20-%20Embedded%20Systems%20%26%20Software",
+            "jobTitle": "Software Design Engineer",
+            "dateRange": "Oct 2002 – Apr 2005",
+            "location": "",
+            "description": null
+          },
+          {
+            "companyName": "Danaher Corporation - Joslyn Hi-Voltage",
+            "companyUrl": "https://www.linkedin.com/search/results/index/?keywords=Danaher%20Corporation%20-%20Joslyn%20Hi-Voltage",
+            "jobTitle": "Technical Marketing",
+            "dateRange": "Jan 2004 – Jun 2004",
+            "location": "",
+            "description": null
+          },
+          {
+            "companyName": "Larsen \u0026 Toubro Limited - Industrial Control \u0026 Automation",
+            "companyUrl": "https://www.linkedin.com/search/results/index/?keywords=Larsen%20%26%20Toubro%20Limited%20-%20Industrial%20Control%20%26%20Automation",
+            "jobTitle": "Graduate Engineer Trainee",
+            "dateRange": "Aug 2001 – Oct 2002",
+            "location": "",
+            "description": null
+          }
+        ],
+        "schools": [
+          {
+            "schoolUrl": "https://www.linkedin.com/school/13557/?legacySchoolId=13557",
+            "schoolName": "Manipal Academy of Higher Education",
+            "degree": "BE",
+            "degreeSpec": "Electronics \u0026 Communication",
+            "dateRange": "1997 – 2001",
+            "description": "Engineering - Electronics \u0026 Communication"
+          },
+          {
+            "schoolUrl": "https://www.linkedin.com/school/13556/?legacySchoolId=13556",
+            "schoolName": "Mangalore University",
+            "degree": "BE",
+            "degreeSpec": "Electronics \u0026 Communication",
+            "dateRange": "1997 – 2001",
+            "description": "Bachelor of Engineering in Electronics \u0026 Communications with focus on the following subjects: * Computer Architecture * Microprocessors 8085 \u0026 8086 * Microprocessor programming 8085 \u0026 8086 * Programming in C, C++ * Data structures in C++ * Analog Electronic Circuits * Digital Electronic Circuits * Electromagnetic Waves \u0026 Antenna"
+          }
+        ],
+        "details": {
+          "linkedinProfile": "https://www.linkedin.com/in/swaroop-shivakumar",
+          "twitter": "",
+          "mail": "swaroop_m_s@yahoo.com"
+        },
+        "skills": [
+          {
+            "name": "Software Development",
+            "endorsements": "15"
+          },
+          {
+            "name": "Software Design",
+            "endorsements": "11"
+          },
+          {
+            "name": "Software Engineering",
+            "endorsements": "10"
+          },
+          {
+            "name": "Agile Methodologies",
+            "endorsements": "7"
+          },
+          {
+            "name": "Testing",
+            "endorsements": "6"
+          },
+          {
+            "name": "Software Project Management",
+            "endorsements": "4"
+          },
+          {
+            "name": "Distributed Systems",
+            "endorsements": "4"
+          },
+          {
+            "name": "Web Services",
+            "endorsements": "3"
+          },
+          {
+            "name": "Scrum",
+            "endorsements": "3"
+          },
+          {
+            "name": "Cloud Computing",
+            "endorsements": "3"
+          },
+          {
+            "name": "Performance Testing",
+            "endorsements": "1"
+          },
+          {
+            "name": "C++",
+            "endorsements": "8"
+          },
+          {
+            "name": "C#",
+            "endorsements": "8"
+          },
+          {
+            "name": "C",
+            "endorsements": "5"
+          },
+          {
+            "name": ".NET",
+            "endorsements": "4"
+          },
+          {
+            "name": "Java",
+            "endorsements": "1"
+          },
+          {
+            "name": "SQL",
+            "endorsements": "1"
+          }
+        ],
+        "allSkills": "Software Development, Software Design, Software Engineering, Agile Methodologies, Testing, Software Project Management, Distributed Systems, Web Services, Scrum, Cloud Computing, Performance Testing, C++, C#, C, .NET, Java, SQL"
+      }
+    ],
+    "output": "* Container 48080113 started in azu-us-west-or-botrunner-2 (Sun Feb 24 2019 19:06:04 GMT+0000 (UTC))\r\n* Got dependency LinkedIn Profile Scraper.js\r\n* Got dependency lib-LinkedIn.js\r\n* Got dependency lib-StoreUtilities.js\r\n* Got dependency lib-LinkedInScraper.js\r\n* Got dependency lib-Hunter.js (babel transform applied)\r\n* Got dependency lib-Dropcontact.js\r\n* Got dependency lib-DiscoverMail.js\r\n* Got dependency lib-request-beta.coffee\r\n* Spawning Node v8.10.0\r\nURLs to scrape: [\r\n    \"https://www.linkedin.com/in/swaroop-shivakumar/\"\r\n]\r\n🔄 Connecting to LinkedIn...\r\n✅ Connected successfully as Pramod Shashidhara\r\n🔄 Opening page https://www.linkedin.com/in/swaroop-shivakumar/\r\n✅ Profile loaded.\r\n🔄 Scrolling to load all data of the profile...\r\n✅ All data loaded\r\n🔄 Scraping page...\r\n✅ https://www.linkedin.com/in/swaroop-shivakumar/ successfully scraped.\r\n* Process finished successfully (exit code: 0) (Sun Feb 24 2019 19:06:20 GMT+0000 (UTC))\r\n"
+  }
+}
