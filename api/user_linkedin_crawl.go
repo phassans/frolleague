@@ -13,7 +13,7 @@ import (
 
 type (
 	userLinkedInCrawlRequest struct {
-		LinkedInUserID engines.LinkedInUserID `json:"linkedInUserId"`
+		UserID engines.LinkedInUserID `json:"userId"`
 	}
 
 	userLinkedInCrawlResponse struct {
@@ -32,7 +32,7 @@ func (r userLinkedInCrawlEndpoint) Execute(ctx context.Context, rtr *router, req
 		return userLinkedInCrawlResponse{}, err
 	}
 
-	profile, err := rtr.engines.CrawlUserProfile(request.LinkedInUserID)
+	profile, err := rtr.engines.CrawlUserProfile(request.UserID)
 	if err != nil {
 		return userLinkedInCrawlResponse{Ok: false, Profile: profile}, err
 	}
@@ -41,7 +41,7 @@ func (r userLinkedInCrawlEndpoint) Execute(ctx context.Context, rtr *router, req
 
 func (r userLinkedInCrawlEndpoint) Validate(request interface{}) error {
 	input := request.(userLinkedInCrawlRequest)
-	if strings.TrimSpace(string(input.LinkedInUserID)) == "" {
+	if strings.TrimSpace(string(input.UserID)) == "" {
 		return common.ValidationError{Message: fmt.Sprint("user me failed, missing fields!")}
 	}
 	return nil

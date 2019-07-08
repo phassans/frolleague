@@ -12,7 +12,7 @@ import (
 
 type (
 	userLinkedInMeRequest struct {
-		LinkedInId linkedin.UserID `json:"linkedInUserId"`
+		UserID linkedin.UserID `json:"userId"`
 	}
 
 	userLinkedInMeResponse struct {
@@ -33,7 +33,7 @@ func (r userLinkedInMeEndpoint) Execute(ctx context.Context, rtr *router, reques
 		return userLinkedInMeResponse{}, err
 	}
 
-	meresp, ok, err := rtr.engines.GetMe(request.LinkedInId)
+	meresp, ok, err := rtr.engines.GetMe(request.UserID)
 	if !ok {
 		return userLinkedInMeResponse{Ok: ok}, err
 	}
@@ -42,7 +42,7 @@ func (r userLinkedInMeEndpoint) Execute(ctx context.Context, rtr *router, reques
 
 func (r userLinkedInMeEndpoint) Validate(request interface{}) error {
 	input := request.(userLinkedInMeRequest)
-	if strings.TrimSpace(string(input.LinkedInId)) == "" {
+	if strings.TrimSpace(string(input.UserID)) == "" {
 		return common.ValidationError{Message: fmt.Sprint("user linkedIn me failed, missing fields!")}
 	}
 	return nil

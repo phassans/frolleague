@@ -13,8 +13,8 @@ import (
 
 type (
 	userCompaniesUpdateRequest struct {
-		LinkedInId engines.UserID    `json:"linkedInUserId"`
-		Companies  []phantom.Company `json:"companies"`
+		UserID    engines.UserID    `json:"userId"`
+		Companies []phantom.Company `json:"companies"`
 	}
 
 	userCompaniesUpdateResponse struct {
@@ -32,7 +32,7 @@ func (r userCompaniesUpdateEndpoint) Execute(ctx context.Context, rtr *router, r
 		return userCompaniesUpdateResponse{}, err
 	}
 
-	err := rtr.engines.UpdateUserCompanies(request.LinkedInId, request.Companies)
+	err := rtr.engines.UpdateUserCompanies(request.UserID, request.Companies)
 	if err != nil {
 		return userCompaniesUpdateResponse{Ok: false}, err
 	}
@@ -41,7 +41,7 @@ func (r userCompaniesUpdateEndpoint) Execute(ctx context.Context, rtr *router, r
 
 func (r userCompaniesUpdateEndpoint) Validate(request interface{}) error {
 	input := request.(userCompaniesUpdateRequest)
-	if strings.TrimSpace(string(input.LinkedInId)) == "" {
+	if strings.TrimSpace(string(input.UserID)) == "" {
 		return common.ValidationError{Message: fmt.Sprint("user linkedIn URL Update failed!")}
 	}
 	return nil
