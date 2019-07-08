@@ -11,8 +11,8 @@ import (
 
 type (
 	userLinkedInURLRequest struct {
-		LinkedInUserID engines.LinkedInUserID `json:"linkedInUserId"`
-		LinkedInURL    engines.LinkedInURL    `json:"linkedInURL"`
+		UserID      engines.LinkedInUserID `json:"userId"`
+		LinkedInURL engines.LinkedInURL    `json:"linkedInURL"`
 	}
 
 	userLinkedInURLResponse struct {
@@ -30,7 +30,7 @@ func (r userLinkedInURLEndpoint) Execute(ctx context.Context, rtr *router, reque
 		return userLinkedInURLResponse{}, err
 	}
 
-	err := rtr.engines.UpdateUserWithLinkedInURL(request.LinkedInUserID, request.LinkedInURL)
+	err := rtr.engines.UpdateUserWithLinkedInURL(request.UserID, request.LinkedInURL)
 	if err != nil {
 		return userLinkedInURLResponse{Ok: false}, err
 	}
@@ -39,7 +39,7 @@ func (r userLinkedInURLEndpoint) Execute(ctx context.Context, rtr *router, reque
 
 func (r userLinkedInURLEndpoint) Validate(request interface{}) error {
 	input := request.(userLinkedInURLRequest)
-	if strings.TrimSpace(string(input.LinkedInUserID)) == "" ||
+	if strings.TrimSpace(string(input.UserID)) == "" ||
 		strings.TrimSpace(string(input.LinkedInURL)) == "" {
 		return common.ValidationError{Message: fmt.Sprint("user linkedIn URL Update failed!")}
 	}

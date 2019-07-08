@@ -16,7 +16,7 @@ type (
 	}
 
 	userGroupToggleResponse struct {
-		Message string `json:"message,omitempty"`
+		Ok bool `json:"ok"`
 	}
 
 	userGroupToggleEndpoint struct{}
@@ -31,8 +31,10 @@ func (r userGroupToggleEndpoint) Execute(ctx context.Context, rtr *router, reque
 	}
 
 	err := rtr.engines.ToggleUserGroup(request.UserID, request.Group, request.Status)
-	result := userGroupToggleResponse{Message: r.GetMessage(err)}
-	return result, err
+	if err != nil {
+		return userGroupToggleResponse{Ok: false}, err
+	}
+	return userGroupToggleResponse{Ok: true}, nil
 }
 
 func (r userGroupToggleEndpoint) Validate(request interface{}) error {
