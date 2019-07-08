@@ -3,7 +3,7 @@ package engines
 const (
 	testDatabaseHost     = "localhost"
 	testDataPort         = "5432"
-	testDatabase         = "viraagh"
+	testDatabase         = "frolleague"
 	testDatabaseUsername = "pshashidhara"
 	testDatabasePassword = "banana123"
 

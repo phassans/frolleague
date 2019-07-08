@@ -27,16 +27,6 @@ type (
 		GetSchoolsByUserID(userID UserID) ([]School, error)
 		GetCompaniesByUserID(userID UserID) ([]Company, error)
 
-		// User Methods
-		AddUser(username Username, password Password, linkedInURL LinkedInURL) (UserID, error)
-		DeleteUser(username Username) error
-		UpdateUserWithNameAndReference(name FirstName, lastName LastName, fileName FileName, id UserID) error
-		UpdateUserWithImage(id UserID, imageName ImageLink) error
-		GetUserByUserNameAndPassword(Username, Password) (User, error)
-		GetUserByLinkedInURL(LinkedInURL) (User, error)
-		GetUserByUserID(UserID) (User, error)
-		UpdateUserPassword(UserID, Password) error
-
 		// School Methods
 		AddSchoolIfNotPresent(school SchoolName, degree Degree, fieldOfStudy FieldOfStudy) (SchoolID, error)
 		DeleteSchool(school SchoolName, degree Degree, fieldOfStudy FieldOfStudy) error
@@ -176,114 +166,6 @@ func (l *databaseEngine) UpdateUserWithToken(userID LinkedInUserID, token Access
 		return err
 	}
 	return nil
-}
-
-func (d *databaseEngine) AddUser(username Username, password Password, linkedInURL LinkedInURL) (UserID, error) {
-	user, err := d.GetUserByLinkedInURL(linkedInURL)
-	if err != nil {
-		if _, ok := err.(common.ErrorUserNotExist); !ok {
-			return "", err
-		}
-	}
-
-	if user.UserID != "" {
-		return "", common.DuplicateSignUp{Username: string(user.Username), LinkedInURL: string(linkedInURL), Message: fmt.Sprintf("user with linkedingURL already exists")}
-	}
-	return d.doAddUser(username, password, linkedInURL)
-}
-
-func (d *databaseEngine) doAddUser(username Username, password Password, linkedInURL LinkedInURL) (UserID, error) {
-	var userID UserID
-	err := d.sql.QueryRow("INSERT INTO viraagh_user(username,password,linkedIn_URL,insert_time) "+
-		"VALUES($1,$2,$3,$4) returning user_id;", username, password, linkedInURL, time.Now()).Scan(&userID)
-	if err != nil {
-		return "", common.DatabaseError{DBError: err.Error()}
-	}
-
-	d.logger.Info().Msgf("successfully added a user with ID: %s", userID)
-
-	return userID, nil
-}
-
-func (d *databaseEngine) DeleteUser(username Username) error {
-	_, err := d.sql.Exec("DELETE FROM viraagh_user WHERE username=$1", username)
-	if err != nil {
-		return common.DatabaseError{DBError: err.Error()}
-	}
-
-	d.logger.Info().Msgf("successfully delete user: %s", username)
-	return nil
-}
-
-func (d *databaseEngine) UpdateUserWithNameAndReference(firstName FirstName, lastName LastName, fileName FileName, id UserID) error {
-	updateUserWithNameAndReferenceSQL := `UPDATE viraagh_user SET first_name = $1, last_name = $2, filename = $3 WHERE user_id=$4;`
-
-	_, err := d.sql.Exec(updateUserWithNameAndReferenceSQL, firstName, lastName, fileName, id)
-	if err != nil {
-		return err
-	}
-	return nil
-}
-
-func (d *databaseEngine) UpdateUserWithImage(id UserID, imageLink ImageLink) error {
-	updateUserWithImageSQL := `UPDATE viraagh_user SET image_link = $1 WHERE user_id=$2;`
-	_, err := d.sql.Exec(updateUserWithImageSQL, imageLink, id)
-	if err != nil {
-		return err
-	}
-	return nil
-}
-
-func (d *databaseEngine) UpdateUserPassword(id UserID, password Password) error {
-	updateUserPassword := `UPDATE viraagh_user SET password = $1 WHERE user_id=$2;`
-
-	_, err := d.sql.Exec(updateUserPassword, password, id)
-	if err != nil {
-		return err
-	}
-	return nil
-}
-
-func (d *databaseEngine) GetUserByUserNameAndPassword(userName Username, password Password) (User, error) {
-	var user User
-	rows := d.sql.QueryRow("SELECT user_id, first_name, last_name, username, linkedin_url, filename FROM viraagh_user WHERE username = $1 AND password = $2", userName, password)
-	err := rows.Scan(&user.UserID, &user.FirstName, &user.LastName, &user.Username, &user.LinkedInURL, &user.FileName)
-
-	if err == sql.ErrNoRows {
-		return User{}, common.UserError{Message: fmt.Sprintf("user doesnt exist")}
-	} else if err != nil {
-		return User{}, common.DatabaseError{DBError: err.Error()}
-	}
-
-	return user, nil
-}
-
-func (d *databaseEngine) GetUserByLinkedInURL(linkedInURL LinkedInURL) (User, error) {
-	var user User
-	rows := d.sql.QueryRow("SELECT user_id, username, linkedin_url FROM viraagh_user WHERE linkedin_url = $1", linkedInURL)
-
-	switch err := rows.Scan(&user.UserID, &user.Username, &user.LinkedInURL); err {
-	case sql.ErrNoRows:
-		return User{}, common.ErrorUserNotExist{Message: fmt.Sprintf("user doesnt exist")}
-	case nil:
-		return user, nil
-	default:
-		return User{}, common.DatabaseError{DBError: err.Error()}
-	}
-}
-
-func (d *databaseEngine) GetUserByUserID(userID UserID) (User, error) {
-	var user User
-	rows := d.sql.QueryRow("SELECT user_id, username, linkedin_url FROM viraagh_user WHERE user_id = $1", userID)
-
-	switch err := rows.Scan(&user.UserID, &user.Username, &user.LinkedInURL); err {
-	case sql.ErrNoRows:
-		return User{}, common.ErrorUserNotExist{Message: fmt.Sprintf("user doesnt exist")}
-	case nil:
-		return user, nil
-	default:
-		return User{}, common.DatabaseError{DBError: err.Error()}
-	}
 }
 
 func (d *databaseEngine) AddSchoolIfNotPresent(schoolName SchoolName, degree Degree, fieldOfStudy FieldOfStudy) (SchoolID, error) {

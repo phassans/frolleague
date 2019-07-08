@@ -13,7 +13,7 @@ func InitLogger() {
 	zerolog.SetGlobalLevel(zerolog.InfoLevel)
 	logger = zerolog.New(os.Stdout).With().
 		Timestamp().
-		Str("service", "viraagh").
+		Str("service", "frolleague").
 		Logger()
 }
 

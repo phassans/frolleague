@@ -1,4 +1,3 @@
-DROP TABLE IF EXISTS viraagh_user;
 DROP TABLE IF EXISTS linkedin_user;
 DROP TABLE IF EXISTS linkedin_user_token;
 DROP TABLE IF EXISTS school;
