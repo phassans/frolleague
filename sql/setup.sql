@@ -1,18 +1,3 @@
-CREATE TABLE IF NOT EXISTS viraagh_user
-(
-    user_id      SERIAL,
-    first_name   TEXT      NULL,
-    last_name    TEXT      NULL,
-    username     TEXT      NOT NULL,
-    password     TEXT      NOT NULL,
-    linkedIn_url TEXT      NOT NULL,
-    filename     TEXT      NULL,
-    image_link   TEXT      NULL,
-    insert_time  TIMESTAMP NOT NULL,
-    PRIMARY KEY (user_id),
-    UNIQUE (linkedIn_url)
-);
-
 CREATE TABLE IF NOT EXISTS linkedin_user
 (
     user_id     TEXT      NOT NULL,

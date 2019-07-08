@@ -22,11 +22,7 @@ type (
 	UserEngine interface {
 		// old
 		SignUp(Username, Password, LinkedInURL) (User, error)
-		Login(Username, Password) (User, error)
 		Refresh(UserID) error
-		ChangePassword(UserID, Password) error
-		DeleteUser(UserID) error
-		UpdateUserWithImage(UserID, ImageLink) error
 
 		GetUserChatGroups(UserID) ([]GroupWithStatus, error)
 		ToggleUserGroup(UserID, Group, bool) error
@@ -52,10 +48,6 @@ func (u *userEngine) SignUp(username Username, password Password, linkedInURL Li
 	var err error
 
 	// add user
-	userId, err = u.dbEngine.AddUser(username, password, linkedInURL)
-	if err != nil {
-		return User{}, err
-	}
 
 	profile, groups, err := u.getAndProcessUserProfile(linkedInURL, userId)
 	if err != nil {
@@ -151,7 +143,7 @@ func (u *userEngine) createGroupsIfNotExist(groups []Group) ([]string, error) {
 }
 
 func (u *userEngine) Refresh(userID UserID) error {
-	var userId UserID
+	/*var userId UserID
 	var err error
 
 	// getUser
@@ -167,43 +159,8 @@ func (u *userEngine) Refresh(userID UserID) error {
 
 	if err := u.BootstrapRocketUser(user.Username, "", profile, groups); err != nil {
 		return err
-	}
+	}*/
 	return nil
-}
-
-func (u *userEngine) ChangePassword(userID UserID, password Password) error {
-	var err error
-
-	// getUser
-	_, err = u.dbEngine.GetUserByUserID(userID)
-	if err != nil {
-		return err
-	}
-
-	// update user preferences
-	if err := u.dbEngine.UpdateUserPassword(userID, password); err != nil {
-		return err
-	}
-
-	return nil
-}
-
-func (u *userEngine) DeleteUser(userID UserID) error {
-	var err error
-
-	// getUser
-	_, err = u.dbEngine.GetUserByUserID(userID)
-	if err != nil {
-		return err
-	}
-
-	// not deleting user now, will think about it more
-
-	return nil
-}
-
-func (u *userEngine) Login(username Username, password Password) (User, error) {
-	return u.dbEngine.GetUserByUserNameAndPassword(username, password)
 }
 
 func (u *userEngine) GetUserChatGroups(userID UserID) ([]GroupWithStatus, error) {
@@ -250,9 +207,9 @@ func (u *userEngine) getAndProcessUserProfile(linkedInURL LinkedInURL, userId Us
 	}
 
 	// update user preferences
-	if err := u.dbEngine.UpdateUserWithNameAndReference(FirstName(profile.User.Firstname), LastName(profile.User.LastName), FileName(profile.FileName), userId); err != nil {
+	/*if err := u.dbEngine.UpdateUserWithNameAndReference(FirstName(profile.User.Firstname), LastName(profile.User.LastName), FileName(profile.FileName), userId); err != nil {
 		return phantom.Profile{}, nil, err
-	}
+	}*/
 
 	// update user preferences
 	groups, err := u.dbEngine.AddGroupsToUser(userId)
@@ -290,10 +247,6 @@ func (u *userEngine) addUserToCompanies(profile phantom.Profile, userID UserID) 
 	}
 
 	return nil
-}
-
-func (u *userEngine) UpdateUserWithImage(userID UserID, imageLink ImageLink) error {
-	return u.dbEngine.UpdateUserWithImage(userID, imageLink)
 }
 
 func (u *userEngine) GetSchoolsByUserID(userID UserID) ([]School, error) {
