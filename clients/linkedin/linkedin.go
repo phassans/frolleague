@@ -14,7 +14,6 @@ import (
 const (
 	// linkedIn
 	grantType    = "authorization_code"
-	redirectURI  = "http://localhost:8000/projects/linkedInLogin/"
 	clientID     = "86ex3hh85g80oi"
 	clientSecret = "CffCzLefgz0f4X6S"
 
@@ -25,9 +24,10 @@ const (
 
 type (
 	client struct {
-		baseURL    string
-		apiBaseURL string
-		logger     zerolog.Logger
+		baseURL     string
+		apiBaseURL  string
+		redirectURL string
+		logger      zerolog.Logger
 	}
 
 	Client interface {
@@ -39,8 +39,8 @@ type (
 var apiPath = map[string]string{apiPathAccessToken: "accessToken", apiPathMe: "me"}
 
 // NewLinkedInClient returns a new linkedIn client
-func NewLinkedInClient(baseURL string, apiBaseURL string, logger zerolog.Logger) Client {
-	return &client{baseURL, apiBaseURL, logger}
+func NewLinkedInClient(baseURL string, apiBaseURL string, redirectURL string, logger zerolog.Logger) Client {
+	return &client{baseURL, apiBaseURL, redirectURL, logger}
 }
 
 func (c *client) GetAccessToken(code AuthCode) (AccessTokenResponse, error) {
@@ -49,10 +49,12 @@ func (c *client) GetAccessToken(code AuthCode) (AccessTokenResponse, error) {
 	request := AccessTokenRequest{
 		Grant_type:    grantType,
 		Code:          string(code),
-		Redirect_uri:  redirectURI,
+		Redirect_uri:  c.redirectURL,
 		Client_id:     clientID,
 		Client_secret: clientSecret,
 	}
+	logger.Info().Msgf("Redirect_uri :%+v", c.redirectURL)
+
 	response, err := c.DoPost(structToMap(&request), apiPath[apiPathAccessToken])
 	if err != nil {
 		return AccessTokenResponse{}, err

@@ -30,11 +30,12 @@ var (
 	genericEngine  engines.Engine
 	linkedInEngine engines.LinkedInEngine
 
-	dbHost     string
-	dbPort     string
-	dbUser     string
-	dbPassword string
-	dbDatabase string
+	dbHost              string
+	dbPort              string
+	dbUser              string
+	dbPassword          string
+	dbDatabase          string
+	linkedInRedirectURL string
 )
 
 func main() {
@@ -89,6 +90,7 @@ func initEnvs() {
 	dbUser = os.Getenv("DB_USER")
 	dbPassword = os.Getenv("DB_PASSWORD")
 	dbDatabase = os.Getenv("DB_DATABASE")
+	linkedInRedirectURL = os.Getenv("LINKEDIN_REDIRECT_URL")
 }
 
 func initDB() {
@@ -112,5 +114,5 @@ func initDependencies() {
 	phantomClient = phantom.NewPhantomClient(phantomURL, logger)
 	logger.Info().Msg("init phantom client")
 
-	linkedInClient = linkedin.NewLinkedInClient(linkedInURL, apiLinkedInURL, logger)
+	linkedInClient = linkedin.NewLinkedInClient(linkedInURL, apiLinkedInURL, linkedInRedirectURL, logger)
 }
