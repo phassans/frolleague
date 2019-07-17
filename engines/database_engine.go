@@ -46,8 +46,8 @@ type (
 		RemoveUserFromCompany(userID UserID, companyID CompanyID) error
 
 		// UserGroups
-		AddGroupsToUser(userID UserID) ([]Group, error)
-		GetGroupsByUserID(userID UserID) ([]Group, error)
+		AddGroupsToUser(userID UserID) ([]GroupInfo, error)
+		GetGroupsByUserID(userID UserID) ([]GroupInfo, error)
 		GetGroupsWithStatusByUserID(id UserID) ([]GroupWithStatus, error)
 		ToggleUserGroup(userID UserID, group Group, status bool) error
 	}
@@ -400,7 +400,7 @@ func (d *databaseEngine) GetCompaniesByUserID(userID UserID) ([]Company, error) 
 	return companies, nil
 }
 
-func (d *databaseEngine) AddGroupsToUser(userID UserID) ([]Group, error) {
+func (d *databaseEngine) AddGroupsToUser(userID UserID) ([]GroupInfo, error) {
 	groups, err := d.getGroupsBySchoolsAndCompanies(userID)
 	if err != nil {
 		return nil, err
@@ -412,14 +412,14 @@ func (d *databaseEngine) AddGroupsToUser(userID UserID) ([]Group, error) {
 	grpMap := make(map[Group]bool)
 	var uniqGroups []Group
 	for _, group := range diffGroups {
-		if !grpMap[group] {
+		if !grpMap[group.Group] {
 			// insert into school
-			_, err = d.sql.Exec("INSERT INTO user_to_groups(user_id,group_name,status) VALUES($1,$2,$3);", userID, group, true)
+			_, err = d.sql.Exec("INSERT INTO user_to_groups(user_id,group_name,status,group_source) VALUES($1,$2,$3,$4);", userID, group.Group, true, group.GroupSource)
 			if err != nil {
 				return nil, common.DatabaseError{DBError: err.Error()}
 			}
-			grpMap[group] = true
-			uniqGroups = append(uniqGroups, group)
+			grpMap[group.Group] = true
+			uniqGroups = append(uniqGroups, group.Group)
 
 			d.logger.Info().Msgf("user with ID:%s joined group: %s", userID, group)
 		}
@@ -429,14 +429,14 @@ func (d *databaseEngine) AddGroupsToUser(userID UserID) ([]Group, error) {
 	return userGroups, nil
 }
 
-func difference(a, b []Group) []Group {
+func difference(a, b []GroupInfo) []GroupInfo {
 	mb := map[Group]bool{}
 	for _, x := range b {
-		mb[x] = true
+		mb[x.Group] = true
 	}
-	ab := []Group{}
+	var ab []GroupInfo
 	for _, x := range a {
-		if _, ok := mb[x]; !ok {
+		if _, ok := mb[x.Group]; !ok {
 			ab = append(ab, x)
 		}
 	}
@@ -454,8 +454,8 @@ func (d *databaseEngine) ToggleUserGroup(userID UserID, group Group, status bool
 	return nil
 }
 
-func (d *databaseEngine) GetGroupsByUserID(userID UserID) ([]Group, error) {
-	rows, err := d.sql.Query("SELECT group_name FROM user_to_groups "+
+func (d *databaseEngine) GetGroupsByUserID(userID UserID) ([]GroupInfo, error) {
+	rows, err := d.sql.Query("SELECT group_name, group_source FROM user_to_groups "+
 		"WHERE user_id=$1", userID)
 	if err != nil {
 		return nil, common.DatabaseError{DBError: err.Error()}
@@ -463,11 +463,11 @@ func (d *databaseEngine) GetGroupsByUserID(userID UserID) ([]Group, error) {
 
 	defer rows.Close()
 
-	var groups []Group
+	var groups []GroupInfo
 
 	for rows.Next() {
-		var group Group
-		err = rows.Scan(&group)
+		var group GroupInfo
+		err = rows.Scan(&group.Group, &group.GroupSource)
 		if err != nil {
 			return nil, common.DatabaseError{DBError: err.Error()}
 		}
@@ -479,7 +479,7 @@ func (d *databaseEngine) GetGroupsByUserID(userID UserID) ([]Group, error) {
 }
 
 func (d *databaseEngine) GetGroupsWithStatusByUserID(userID UserID) ([]GroupWithStatus, error) {
-	rows, err := d.sql.Query("SELECT group_name, status FROM user_to_groups "+
+	rows, err := d.sql.Query("SELECT group_name, status, group_source FROM user_to_groups "+
 		"WHERE user_id=$1", userID)
 	if err != nil {
 		return nil, common.DatabaseError{DBError: err.Error()}
@@ -491,7 +491,7 @@ func (d *databaseEngine) GetGroupsWithStatusByUserID(userID UserID) ([]GroupWith
 
 	for rows.Next() {
 		var groupWithStatus GroupWithStatus
-		err = rows.Scan(&groupWithStatus.Group, &groupWithStatus.Status)
+		err = rows.Scan(&groupWithStatus.Group, &groupWithStatus.Status, &groupWithStatus.GroupSource)
 		if err != nil {
 			return nil, common.DatabaseError{DBError: err.Error()}
 		}
@@ -502,8 +502,8 @@ func (d *databaseEngine) GetGroupsWithStatusByUserID(userID UserID) ([]GroupWith
 	return groups, nil
 }
 
-func (d *databaseEngine) getGroupsBySchoolsAndCompanies(userID UserID) ([]Group, error) {
-	var groups []Group
+func (d *databaseEngine) getGroupsBySchoolsAndCompanies(userID UserID) ([]GroupInfo, error) {
+	var groups []GroupInfo
 	groupsSchools, err := d.GetSchoolsByUserID(userID)
 	if err != nil {
 		return nil, err
@@ -518,13 +518,13 @@ func (d *databaseEngine) getGroupsBySchoolsAndCompanies(userID UserID) ([]Group,
 	return groups, nil
 }
 
-func (d *databaseEngine) schoolsToGroups(schools []School) []Group {
-	var grps []Group
+func (d *databaseEngine) schoolsToGroups(schools []School) []GroupInfo {
+	var grps []GroupInfo
 
 	for _, school := range schools {
 		// add schoolName
 		schoolName := strings.Replace(string(school.SchoolName), " ", "", -1)
-		grps = append(grps, Group(schoolName))
+		grps = append(grps, GroupInfo{Group(schoolName), "school"})
 
 		if school.Degree != "" {
 			degree := strings.Replace(string(school.Degree), " ", "", -1)
@@ -532,26 +532,26 @@ func (d *databaseEngine) schoolsToGroups(schools []School) []Group {
 
 			// add combination of school, degree & fieldOfStudy
 			groupName := fmt.Sprintf("%s-%s-%s-%d-%d", schoolName, degree, fieldOfStudy, school.FromYear, school.ToYear)
-			grps = append(grps, Group(groupName))
+			grps = append(grps, GroupInfo{Group(groupName), "school"})
 		}
 
 	}
 	return grps
 }
 
-func (d *databaseEngine) companiesToGroups(companies []Company) []Group {
-	var grps []Group
+func (d *databaseEngine) companiesToGroups(companies []Company) []GroupInfo {
+	var grps []GroupInfo
 
 	for _, company := range companies {
 		// add companyName
 		companyName := strings.Replace(string(company.CompanyName), " ", "", -1)
-		grps = append(grps, Group(companyName))
+		grps = append(grps, GroupInfo{Group(companyName), "company"})
 
 		if company.Location != "" {
 			location := strings.Replace(string(company.Location), " ", "", -1)
 			// add combination of companyName & location
 			groupName := fmt.Sprintf("%s-%s", companyName, location)
-			grps = append(grps, Group(groupName))
+			grps = append(grps, GroupInfo{Group(groupName), "company"})
 		}
 
 	}

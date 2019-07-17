@@ -27,6 +27,8 @@ type (
 
 	Group string
 
+	GroupSource string
+
 	FileName string
 
 	ImageLink string
@@ -36,6 +38,11 @@ type (
 	SchoolID int64
 
 	CompanyID int64
+
+	GroupInfo struct {
+		Group       Group
+		GroupSource GroupSource
+	}
 
 	User struct {
 		FirstName   FirstName
@@ -61,7 +68,13 @@ type (
 	}
 
 	GroupWithStatus struct {
-		Group  Group `json:"group"`
-		Status bool  `json:"status"`
+		Group       Group  `json:"group"`
+		Status      bool   `json:"status"`
+		GroupSource string `json:"groupSource"`
+	}
+
+	AllGroups struct {
+		CompanyGroups []GroupWithStatus `json:"companyGroups"`
+		SchoolGroups  []GroupWithStatus `json:"schoolGroups"`
 	}
 )
