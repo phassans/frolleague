@@ -24,7 +24,7 @@ type (
 		SignUp(Username, Password, LinkedInURL) (User, error)
 		Refresh(UserID) error
 
-		GetUserChatGroups(UserID) ([]GroupWithStatus, error)
+		GetUserChatGroups(UserID) (AllGroups, error)
 		ToggleUserGroup(UserID, Group, bool) error
 
 		// new
@@ -61,7 +61,7 @@ func (u *userEngine) SignUp(username Username, password Password, linkedInURL Li
 	return User{UserID: userId}, nil
 }
 
-func (u *userEngine) BootstrapRocketUser(username Username, password Password, profile phantom.Profile, groups []Group) error {
+func (u *userEngine) BootstrapRocketUser(username Username, password Password, profile phantom.Profile, groups []GroupInfo) error {
 	// user
 	userID, err := u.createUserIfNotExist(username, password, profile)
 	if err != nil {
@@ -114,12 +114,12 @@ func (u *userEngine) createUserIfNotExist(username Username, password Password, 
 	return userId, nil
 }
 
-func (u *userEngine) createGroupsIfNotExist(groups []Group) ([]string, error) {
+func (u *userEngine) createGroupsIfNotExist(groups []GroupInfo) ([]string, error) {
 	// create groups
 	var groupIDs []string
 	for _, group := range groups {
 		var groupID string
-		groupInfo, err := u.rClient.InfoGroup(rocket.InfoGroupRequest{RoomName: string(group)})
+		groupInfo, err := u.rClient.InfoGroup(rocket.InfoGroupRequest{RoomName: string(group.Group)})
 		if err != nil {
 			if err, ok := err.(rocket.ErrorGroupNotFound); !ok {
 				return groupIDs, err
@@ -127,7 +127,7 @@ func (u *userEngine) createGroupsIfNotExist(groups []Group) ([]string, error) {
 		}
 
 		if groupInfo.Success == false {
-			resp, err := u.rClient.CreateGroup(rocket.GroupCreateRequest{Name: string(group)})
+			resp, err := u.rClient.CreateGroup(rocket.GroupCreateRequest{Name: string(group.Group)})
 			if err != nil {
 				if !strings.Contains(err.Error(), "error-duplicate-channel-name") {
 					return nil, err
@@ -163,8 +163,29 @@ func (u *userEngine) Refresh(userID UserID) error {
 	return nil
 }
 
-func (u *userEngine) GetUserChatGroups(userID UserID) ([]GroupWithStatus, error) {
-	return u.dbEngine.GetGroupsWithStatusByUserID(userID)
+func (u *userEngine) GetUserChatGroups(userID UserID) (AllGroups, error) {
+
+	var allGroups AllGroups
+
+	groups, err := u.dbEngine.GetGroupsWithStatusByUserID(userID)
+	if err != nil {
+		return allGroups, err
+	}
+
+	var companyGroups []GroupWithStatus
+	var schoolGroups []GroupWithStatus
+	for _, group := range groups {
+		if group.GroupSource == "company" {
+			companyGroups = append(companyGroups, group)
+		}
+		if group.GroupSource == "school" {
+			schoolGroups = append(schoolGroups, group)
+		}
+	}
+	allGroups.CompanyGroups = companyGroups
+	allGroups.SchoolGroups = schoolGroups
+
+	return allGroups, nil
 }
 
 func (u *userEngine) ToggleUserGroup(userID UserID, group Group, status bool) error {
@@ -180,7 +201,7 @@ func (u *userEngine) ToggleUserGroup(userID UserID, group Group, status bool) er
 
 	isValidGroup := false
 	for _, g := range groups {
-		if g == group {
+		if g.Group == group {
 			isValidGroup = true
 		}
 	}
@@ -191,7 +212,7 @@ func (u *userEngine) ToggleUserGroup(userID UserID, group Group, status bool) er
 	return u.dbEngine.ToggleUserGroup(userID, group, status)
 }
 
-func (u *userEngine) getAndProcessUserProfile(linkedInURL LinkedInURL, userId UserID) (phantom.Profile, []Group, error) {
+func (u *userEngine) getAndProcessUserProfile(linkedInURL LinkedInURL, userId UserID) (phantom.Profile, []GroupInfo, error) {
 	// get userProfile
 	profile, err := u.pClient.GetUserProfile(string(linkedInURL), false)
 	if err != nil {

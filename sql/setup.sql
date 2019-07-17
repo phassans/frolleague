@@ -60,8 +60,9 @@ CREATE TABLE IF NOT EXISTS user_to_company
 
 CREATE TABLE IF NOT EXISTS user_to_groups
 (
-    user_id    TEXT NOT NULL,
-    group_name TEXT    NOT NULL,
-    status     BOOLEAN NOT NULL,
-    PRIMARY KEY (user_id, group_name)
+    user_id      TEXT NOT NULL,
+    group_name   TEXT    NOT NULL,
+    status       BOOLEAN NOT NULL,
+    group_source TEXT NOT NULL,
+    PRIMARY KEY  (user_id, group_name)
 );
