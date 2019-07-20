@@ -43,6 +43,7 @@ CREATE TABLE IF NOT EXISTS user_to_school
     school_id   NUMERIC   NOT NULL,
     from_year   INTEGER   NULL,
     to_year     INTEGER   NULL,
+    status      BOOLEAN NOT NULL,
     insert_time TIMESTAMP NOT NULL,
     PRIMARY KEY (user_id, school_id, from_year, to_year)
 );
@@ -54,6 +55,7 @@ CREATE TABLE IF NOT EXISTS user_to_company
     title       TEXT      NULL,
     from_year   INTEGER   NULL,
     to_year     INTEGER   NULL,
+    status      BOOLEAN NOT NULL,
     insert_time TIMESTAMP NOT NULL,
     PRIMARY KEY (user_id, company_id, from_year, to_year)
 );
