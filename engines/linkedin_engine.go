@@ -146,6 +146,11 @@ func (l *linkedInEngine) UpdateUserWithLinkedInURL(UserID LinkedInUserID, url Li
 }
 
 func (l *linkedInEngine) UpdateUserCompanies(userID UserID, companies []phantom.Company) error {
+	// clear user-company relationship
+	if err := l.dbEngine.UpdateUserStatusForAllCompanies(userID); err != nil {
+		return err
+	}
+
 	for _, company := range companies {
 		companyID, err := l.dbEngine.AddCompanyIfNotPresent(CompanyName(company.CompanyName), Location(company.Location))
 		if err != nil {
@@ -169,6 +174,11 @@ func (l *linkedInEngine) UpdateUserCompanies(userID UserID, companies []phantom.
 }
 
 func (l *linkedInEngine) UpdateUserSchools(userID UserID, schools []phantom.School) error {
+	// clear all user-school relationship
+	if err := l.dbEngine.UpdateUserStatusForAllSchools(userID); err != nil {
+		return err
+	}
+
 	for _, school := range schools {
 		schoolID, err := l.dbEngine.AddSchoolIfNotPresent(SchoolName(school.SchoolName), Degree(school.Degree), FieldOfStudy(school.FieldOfStudy))
 		if err != nil {

@@ -77,4 +77,14 @@ type (
 		CompanyGroups []GroupWithStatus `json:"companyGroups"`
 		SchoolGroups  []GroupWithStatus `json:"schoolGroups"`
 	}
+
+	SchoolIDWithStatus struct {
+		SchoolID SchoolID
+		Status   bool
+	}
+
+	CompanyIDWithStatus struct {
+		CompanyID CompanyID
+		Status    bool
+	}
 )

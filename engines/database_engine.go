@@ -40,10 +40,12 @@ type (
 		// UserToSchool
 		AddUserToSchool(userID UserID, schoolID SchoolID, fromYear FromYear, toYear ToYear) error
 		RemoveUserFromSchool(userID UserID, schoolID SchoolID) error
+		UpdateUserStatusForAllSchools(userID UserID) error
 
 		// UserToCompany
 		AddUserToCompany(userID UserID, companyID CompanyID, title Title, fromYear FromYear, toYear ToYear) error
 		RemoveUserFromCompany(userID UserID, companyID CompanyID) error
+		UpdateUserStatusForAllCompanies(userID UserID) error
 
 		// UserGroups
 		AddGroupsToUser(userID UserID) ([]GroupInfo, error)
@@ -270,36 +272,40 @@ func (d *databaseEngine) GetCompanyID(companyName CompanyName, location Location
 }
 
 func (d *databaseEngine) AddUserToSchool(userID UserID, schoolID SchoolID, fromYear FromYear, toYear ToYear) error {
-	count, err := d.GetUserToSchoolByUserAndSchool(userID, schoolID, fromYear, toYear)
+	schoolIDWithStatus, err := d.GetUserToSchoolByUserAndSchool(userID, schoolID, fromYear, toYear)
 	if err != nil {
 		return err
 	}
 
-	if count == 0 {
-		_, err := d.sql.Exec("INSERT INTO user_to_school(user_id,school_id,from_year,to_year,insert_time) "+
-			"VALUES($1,$2,$3,$4,$5)",
-			userID, schoolID, fromYear, toYear, time.Now())
+	if schoolIDWithStatus.SchoolID == 0 {
+		_, err := d.sql.Exec("INSERT INTO user_to_school(user_id,school_id,from_year,to_year,status,insert_time) "+
+			"VALUES($1,$2,$3,$4,$5,$6)",
+			userID, schoolID, fromYear, toYear, true, time.Now())
 		if err != nil {
 			return common.DatabaseError{DBError: err.Error()}
 		}
 		d.logger.Info().Msgf("successfully added a user: %s to school: %d", userID, schoolID)
+	} else if schoolIDWithStatus.Status != true {
+		if err := d.UpdateUserStatusForSchool(userID, schoolID, true); err != nil {
+			return err
+		}
 	}
 
 	return nil
 }
 
-func (d *databaseEngine) GetUserToSchoolByUserAndSchool(userID UserID, schoolID SchoolID, fromYear FromYear, toYear ToYear) (int, error) {
-	var count int
-	rows := d.sql.QueryRow("SELECT count(*) FROM user_to_school WHERE user_id = $1 AND school_id = $2 AND from_year = $3 AND to_year = $4", userID, schoolID, fromYear, toYear)
-	err := rows.Scan(&count)
+func (d *databaseEngine) GetUserToSchoolByUserAndSchool(userID UserID, schoolID SchoolID, fromYear FromYear, toYear ToYear) (SchoolIDWithStatus, error) {
+	var m SchoolIDWithStatus
+	rows := d.sql.QueryRow("SELECT school_id,status FROM user_to_school WHERE user_id = $1 AND school_id = $2 AND from_year = $3 AND to_year = $4", userID, schoolID, fromYear, toYear)
+	err := rows.Scan(&m.SchoolID, &m.Status)
 
 	if err == sql.ErrNoRows {
-		return 0, common.UserError{Message: fmt.Sprintf("user doesnt exist")}
+		return SchoolIDWithStatus{}, nil
 	} else if err != nil {
-		return 0, common.DatabaseError{DBError: err.Error()}
+		return SchoolIDWithStatus{}, common.DatabaseError{DBError: err.Error()}
 	}
 
-	return count, nil
+	return m, nil
 }
 
 func (d *databaseEngine) RemoveUserFromSchool(userID UserID, schoolID SchoolID) error {
@@ -312,10 +318,30 @@ func (d *databaseEngine) RemoveUserFromSchool(userID UserID, schoolID SchoolID) 
 	return nil
 }
 
+func (d *databaseEngine) UpdateUserStatusForAllSchools(userID UserID) error {
+	_, err := d.sql.Exec("UPDATE user_to_school SET status=$1 WHERE user_id=$2", false, userID)
+	if err != nil {
+		return common.DatabaseError{DBError: err.Error()}
+	}
+
+	d.logger.Info().Msgf("successfully removed user: %s from all schools", userID)
+	return nil
+}
+
+func (d *databaseEngine) UpdateUserStatusForSchool(userID UserID, schoolID SchoolID, status bool) error {
+	_, err := d.sql.Exec("UPDATE user_to_school SET status=$1 WHERE user_id=$2 AND school_id=$3", status, userID, schoolID)
+	if err != nil {
+		return common.DatabaseError{DBError: err.Error()}
+	}
+
+	d.logger.Info().Msgf("successfully removed user: %s from all schools", userID)
+	return nil
+}
+
 func (d *databaseEngine) GetSchoolsByUserID(userID UserID) ([]School, error) {
 	rows, err := d.sql.Query("SELECT school.school_name, school.degree, school.field_of_study,user_to_school.from_year, user_to_school.to_year "+
 		"FROM school INNER JOIN user_to_school ON school.school_id = user_to_school.school_id "+
-		"WHERE user_to_school.user_id=$1", userID)
+		"WHERE user_to_school.user_id=$1 AND user_to_school.status=$2", userID, true)
 	if err != nil {
 		return nil, common.DatabaseError{DBError: err.Error()}
 	}
@@ -336,35 +362,41 @@ func (d *databaseEngine) GetSchoolsByUserID(userID UserID) ([]School, error) {
 }
 
 func (d *databaseEngine) AddUserToCompany(userID UserID, companyID CompanyID, title Title, fromYear FromYear, toYear ToYear) error {
-	count, err := d.GetUserToCompanyByUserAndCompany(userID, companyID, title, fromYear, toYear)
+	companyIDWithStatus, err := d.GetUserToCompanyByUserAndCompany(userID, companyID)
 	if err != nil {
 		return err
 	}
 
-	if count == 0 {
-		if _, err := d.sql.Exec("INSERT INTO user_to_company(user_id,company_id,title,from_year,to_year,insert_time) "+
-			"VALUES($1,$2,$3,$4,$5,$6)",
-			userID, companyID, title, fromYear, toYear, time.Now()); err != nil {
+	if companyIDWithStatus.CompanyID == 0 {
+		if _, err := d.sql.Exec("INSERT INTO user_to_company(user_id,company_id,title,from_year,to_year,status,insert_time) "+
+			"VALUES($1,$2,$3,$4,$5,$6,$7)",
+			userID, companyID, title, fromYear, toYear, true, time.Now()); err != nil {
 			return common.DatabaseError{DBError: err.Error()}
 		}
 		d.logger.Info().Msgf("successfully added a user: %s to company: %d", userID, companyID)
+	} else if companyIDWithStatus.Status != true {
+		if err := d.UpdateUserStatusForCompany(userID, companyID, true); err != nil {
+			return err
+		}
 	}
 
 	return nil
 }
 
-func (d *databaseEngine) GetUserToCompanyByUserAndCompany(userID UserID, companyID CompanyID, title Title, fromYear FromYear, toYear ToYear) (int, error) {
-	var count int
-	rows := d.sql.QueryRow("SELECT count(*) FROM user_to_company WHERE user_id = $1 AND company_id = $2 AND title = $3 AND from_year = $4 AND to_year = $5", userID, companyID, title, fromYear, toYear)
-	err := rows.Scan(&count)
+func (d *databaseEngine) GetUserToCompanyByUserAndCompany(userID UserID, companyID CompanyID) (CompanyIDWithStatus, error) {
+	var companyIDWithStatus CompanyIDWithStatus
+	rows := d.sql.QueryRow("SELECT company_id,status FROM user_to_company "+
+		"WHERE user_id = $1 AND company_id = $2",
+		userID, companyID)
+	err := rows.Scan(&companyIDWithStatus.CompanyID, &companyIDWithStatus.Status)
 
 	if err == sql.ErrNoRows {
-		return 0, common.UserError{Message: fmt.Sprintf("user doesnt exist")}
+		return CompanyIDWithStatus{}, nil
 	} else if err != nil {
-		return 0, common.DatabaseError{DBError: err.Error()}
+		return CompanyIDWithStatus{}, common.DatabaseError{DBError: err.Error()}
 	}
 
-	return count, nil
+	return companyIDWithStatus, nil
 }
 
 func (d *databaseEngine) RemoveUserFromCompany(userID UserID, companyID CompanyID) error {
@@ -377,10 +409,30 @@ func (d *databaseEngine) RemoveUserFromCompany(userID UserID, companyID CompanyI
 	return nil
 }
 
+func (d *databaseEngine) UpdateUserStatusForAllCompanies(userID UserID) error {
+	_, err := d.sql.Exec("UPDATE user_to_company SET status=$1 WHERE user_id=$2", false, userID)
+	if err != nil {
+		return common.DatabaseError{DBError: err.Error()}
+	}
+
+	d.logger.Info().Msgf("successfully removed user: %s from all companies", userID)
+	return nil
+}
+
+func (d *databaseEngine) UpdateUserStatusForCompany(userID UserID, companyID CompanyID, status bool) error {
+	_, err := d.sql.Exec("UPDATE user_to_company SET status=$1 WHERE user_id=$2 AND company_id=$3", status, userID, companyID)
+	if err != nil {
+		return common.DatabaseError{DBError: err.Error()}
+	}
+
+	d.logger.Info().Msgf("successfully removed user: %s from all schools", userID)
+	return nil
+}
+
 func (d *databaseEngine) GetCompaniesByUserID(userID UserID) ([]Company, error) {
 	rows, err := d.sql.Query("SELECT company.company_name, company.location "+
 		"FROM company INNER JOIN user_to_company ON company.company_id = user_to_company.company_id "+
-		"WHERE user_to_company.user_id=$1", userID)
+		"WHERE user_to_company.user_id=$1 AND user_to_company.status=$2", userID, true)
 	if err != nil {
 		return nil, common.DatabaseError{DBError: err.Error()}
 	}
