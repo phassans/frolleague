@@ -517,14 +517,17 @@ func (d *databaseEngine) AddGroupsToUserCompany(userID UserID, companyID Company
 }
 
 func difference(a, b []GroupInfo) []GroupInfo {
-	mb := map[Group]bool{}
-	for _, x := range b {
-		mb[x.Group] = true
-	}
 	var ab []GroupInfo
-	for _, x := range a {
-		if _, ok := mb[x.Group]; !ok {
-			ab = append(ab, x)
+	for _, groupA := range a {
+		found := false
+		for _, groupB := range b {
+			if groupA.Group == groupB.Group && groupA.GroupSource == groupB.GroupSource {
+				found = true
+				break
+			}
+		}
+		if !found {
+			ab = append(ab, groupA)
 		}
 	}
 	return ab
