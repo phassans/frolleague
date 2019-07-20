@@ -161,14 +161,14 @@ func (l *linkedInEngine) UpdateUserCompanies(userID UserID, companies []phantom.
 			return err
 		}
 
-		// update user preferences
-		groups, err := l.dbEngine.AddGroupsToUser(userID)
-		if err != nil {
-			return err
-		}
-		l.logger.Info().Msgf("groups: %v", groups)
-
 	}
+
+	// update user preferences
+	groups, err := l.dbEngine.AddGroupsToUser(userID)
+	if err != nil {
+		return err
+	}
+	l.logger.Info().Msgf("groups: %v", groups)
 
 	return nil
 }
@@ -188,14 +188,13 @@ func (l *linkedInEngine) UpdateUserSchools(userID UserID, schools []phantom.Scho
 		if err := l.dbEngine.AddUserToSchool(userID, schoolID, FromYear(school.FromYear), ToYear(school.ToYear)); err != nil {
 			return err
 		}
-
-		// update user preferences
-		groups, err := l.dbEngine.AddGroupsToUser(userID)
-		if err != nil {
-			return err
-		}
-		l.logger.Info().Msgf("groups: %v", groups)
 	}
+	// update user preferences
+	groups, err := l.dbEngine.AddGroupsToUser(userID)
+	if err != nil {
+		return err
+	}
+	l.logger.Info().Msgf("groups: %v", groups)
 
 	return nil
 }

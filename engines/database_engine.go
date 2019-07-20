@@ -52,6 +52,7 @@ type (
 		GetGroupsByUserID(userID UserID) ([]GroupInfo, error)
 		GetGroupsWithStatusByUserID(id UserID) ([]GroupWithStatus, error)
 		ToggleUserGroup(userID UserID, group Group, status bool) error
+		RemoveGroups(id UserID, groups []GroupInfo) error
 	}
 )
 
@@ -477,6 +478,40 @@ func (d *databaseEngine) AddGroupsToUser(userID UserID) ([]GroupInfo, error) {
 		}
 	}
 
+	delGroups := difference(userGroups, groups)
+	if err := d.RemoveGroups(userID, delGroups); err != nil {
+		return userGroups, err
+	}
+
+	userGroups = append(userGroups, diffGroups...)
+	return userGroups, nil
+}
+
+func (d *databaseEngine) AddGroupsToUserCompany(userID UserID, companyID CompanyID) ([]GroupInfo, error) {
+	groups, err := d.getGroupsBySchoolsAndCompanies(userID)
+	if err != nil {
+		return nil, err
+	}
+	userGroups, err := d.GetGroupsByUserID(userID)
+	diffGroups := difference(groups, userGroups)
+
+	// Note: only add unique groups
+	grpMap := make(map[Group]bool)
+	var uniqGroups []Group
+	for _, group := range diffGroups {
+		if !grpMap[group.Group] {
+			// insert into school
+			_, err = d.sql.Exec("INSERT INTO user_to_groups(user_id,group_name,status,group_source) VALUES($1,$2,$3,$4);", userID, group.Group, true, group.GroupSource)
+			if err != nil {
+				return nil, common.DatabaseError{DBError: err.Error()}
+			}
+			grpMap[group.Group] = true
+			uniqGroups = append(uniqGroups, group.Group)
+
+			d.logger.Info().Msgf("user with ID:%s joined group: %s", userID, group)
+		}
+	}
+
 	userGroups = append(userGroups, diffGroups...)
 	return userGroups, nil
 }
@@ -503,6 +538,25 @@ func (d *databaseEngine) ToggleUserGroup(userID UserID, group Group, status bool
 	}
 
 	d.logger.Info().Msgf("user with ID:%s removed from group: %s", userID, group)
+	return nil
+}
+
+func (d *databaseEngine) RemoveGroups(userID UserID, groups []GroupInfo) error {
+	for _, group := range groups {
+		if err := d.DeleteUserGroup(userID, group); err != nil {
+			return err
+		}
+	}
+	return nil
+}
+
+func (d *databaseEngine) DeleteUserGroup(userID UserID, group GroupInfo) error {
+	_, err := d.sql.Exec("DELETE FROM user_to_groups WHERE user_id=$1 AND group_name = $2", userID, group.Group)
+	if err != nil {
+		return common.DatabaseError{DBError: err.Error()}
+	}
+
+	d.logger.Info().Msgf("successfully deleted user: %s and group: %s", userID, group.Group)
 	return nil
 }
 
