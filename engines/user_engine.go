@@ -8,9 +8,10 @@ import (
 
 type (
 	userEngine struct {
-		pClient  phantom.Client
-		dbEngine DatabaseEngine
-		logger   zerolog.Logger
+		pClient          phantom.Client
+		dbEngine         DatabaseEngine
+		rocketChatEngine RocketChatEngine
+		logger           zerolog.Logger
 	}
 
 	UserEngine interface {
@@ -26,10 +27,11 @@ type (
 	}
 )
 
-func NewUserEngine(pClient phantom.Client, dbEngine DatabaseEngine, logger zerolog.Logger) (UserEngine, error) {
+func NewUserEngine(pClient phantom.Client, dbEngine DatabaseEngine, rocketChatEngine RocketChatEngine, logger zerolog.Logger) (UserEngine, error) {
 	return &userEngine{
 		pClient,
 		dbEngine,
+		rocketChatEngine,
 		logger,
 	}, nil
 }
@@ -92,45 +94,32 @@ func (u *userEngine) ToggleUserGroup(userID UserID, group Group, status bool) er
 	}
 
 	isValidGroup := false
+	var rcGroup GroupInfo
 	for _, g := range groups {
 		if g.Group == group {
 			isValidGroup = true
+			rcGroup = g
 		}
 	}
 	if !isValidGroup {
 		return common.ErrorNotExist{"user group doesnt exist!"}
 	}
 
-	return u.dbEngine.ToggleUserGroup(userID, group, status)
-}
-
-func (u *userEngine) getAndProcessUserProfile(linkedInURL LinkedInURL, userId UserID) (phantom.Profile, []GroupInfo, error) {
-	// get userProfile
-	profile, err := u.pClient.GetUserProfile(string(linkedInURL), false)
-	if err != nil {
-		return phantom.Profile{}, nil, err
+	if err := u.dbEngine.ToggleUserGroup(userID, group, status); err != nil {
+		return err
 	}
 
-	if err := u.addUserToSchools(profile, userId); err != nil {
-		return phantom.Profile{}, nil, err
+	if status {
+		if err := u.rocketChatEngine.AddUserToGroups(userID, []GroupInfo{rcGroup}); err != nil {
+			return err
+		}
+	} else {
+		if err := u.rocketChatEngine.RemoveUseFromGroups(userID, []GroupInfo{rcGroup}); err != nil {
+			return err
+		}
 	}
 
-	if err := u.addUserToCompanies(profile, userId); err != nil {
-		return phantom.Profile{}, nil, err
-	}
-
-	// update user preferences
-	/*if err := u.dbEngine.UpdateUserWithNameAndReference(FirstName(profile.User.Firstname), LastName(profile.User.LastName), FileName(profile.FileName), userId); err != nil {
-		return phantom.Profile{}, nil, err
-	}*/
-
-	// update user preferences
-	groups, err := u.dbEngine.AddGroupsToUser(userId)
-	if err != nil {
-		return phantom.Profile{}, nil, err
-	}
-
-	return profile, groups, nil
+	return nil
 }
 
 func (u *userEngine) addUserToSchools(profile phantom.Profile, userID UserID) error {

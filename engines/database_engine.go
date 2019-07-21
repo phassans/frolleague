@@ -49,6 +49,7 @@ type (
 
 		// UserGroups
 		AddGroupsToUser(userID UserID) ([]GroupInfo, error)
+		RemoveGroupsFromUser(userID UserID) ([]GroupInfo, error)
 		GetGroupsByUserID(userID UserID) ([]GroupInfo, error)
 		GetGroupsByUserIDAndStatus(UserID, bool) ([]GroupInfo, error)
 		GetGroupsWithStatusByUserID(id UserID) ([]GroupWithStatus, error)
@@ -478,14 +479,21 @@ func (d *databaseEngine) AddGroupsToUser(userID UserID) ([]GroupInfo, error) {
 			d.logger.Info().Msgf("user with ID:%s joined group: %s", userID, group)
 		}
 	}
+	return diffGroups, nil
+}
+
+func (d *databaseEngine) RemoveGroupsFromUser(userID UserID) ([]GroupInfo, error) {
+	groups, err := d.getGroupsBySchoolsAndCompanies(userID)
+	if err != nil {
+		return nil, err
+	}
+	userGroups, err := d.GetGroupsByUserID(userID)
 
 	delGroups := difference(userGroups, groups)
 	if err := d.RemoveGroups(userID, delGroups); err != nil {
 		return userGroups, err
 	}
-
-	userGroups = append(userGroups, diffGroups...)
-	return userGroups, nil
+	return delGroups, nil
 }
 
 func (d *databaseEngine) AddGroupsToUserCompany(userID UserID, companyID CompanyID) ([]GroupInfo, error) {

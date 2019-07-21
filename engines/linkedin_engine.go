@@ -12,11 +12,12 @@ import (
 
 type (
 	linkedInEngine struct {
-		client   linkedin.Client
-		sql      *sql.DB
-		logger   zerolog.Logger
-		pClient  phantom.Client
-		dbEngine DatabaseEngine
+		client           linkedin.Client
+		sql              *sql.DB
+		logger           zerolog.Logger
+		pClient          phantom.Client
+		dbEngine         DatabaseEngine
+		rocketChatEngine RocketChatEngine
 	}
 
 	LinkedInEngine interface {
@@ -36,8 +37,15 @@ type (
 	}
 )
 
-func NewLinkedInEngine(client linkedin.Client, psql *sql.DB, logger zerolog.Logger, pClient phantom.Client, dbEngine DatabaseEngine) LinkedInEngine {
-	return &linkedInEngine{client, psql, logger, pClient, dbEngine}
+func NewLinkedInEngine(
+	client linkedin.Client,
+	psql *sql.DB,
+	logger zerolog.Logger,
+	pClient phantom.Client,
+	dbEngine DatabaseEngine,
+	rocketChatEngine RocketChatEngine,
+) LinkedInEngine {
+	return &linkedInEngine{client, psql, logger, pClient, dbEngine, rocketChatEngine}
 }
 
 func (l *linkedInEngine) GetAccessToken(authCode linkedin.AuthCode) (linkedin.AccessTokenResponse, error) {
@@ -164,11 +172,9 @@ func (l *linkedInEngine) UpdateUserCompanies(userID UserID, companies []phantom.
 	}
 
 	// update user preferences
-	groups, err := l.dbEngine.AddGroupsToUser(userID)
-	if err != nil {
+	if err := l.UpdateUserPreferences(userID); err != nil {
 		return err
 	}
-	l.logger.Info().Msgf("groups: %v", groups)
 
 	return nil
 }
@@ -189,12 +195,42 @@ func (l *linkedInEngine) UpdateUserSchools(userID UserID, schools []phantom.Scho
 			return err
 		}
 	}
+
 	// update user preferences
-	groups, err := l.dbEngine.AddGroupsToUser(userID)
+	if err := l.UpdateUserPreferences(userID); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (l *linkedInEngine) UpdateUserPreferences(userID UserID) error {
+	// update user preferences
+	addedGroups, err := l.dbEngine.AddGroupsToUser(userID)
 	if err != nil {
 		return err
 	}
-	l.logger.Info().Msgf("groups: %v", groups)
+	l.logger.Info().Msgf("added groups: %v", addedGroups)
+
+	if len(addedGroups) > 0 {
+		// add rocket chat
+		if err := l.rocketChatEngine.AddUserToGroups(userID, addedGroups); err != nil {
+			return err
+		}
+	}
+
+	deletedGroups, err := l.dbEngine.RemoveGroupsFromUser(userID)
+	if err != nil {
+		return err
+	}
+	l.logger.Info().Msgf("deleted groups: %v", deletedGroups)
+
+	if len(deletedGroups) > 0 {
+		// remove rocket chat
+		if err := l.rocketChatEngine.RemoveUseFromGroups(userID, deletedGroups); err != nil {
+			return err
+		}
+	}
 
 	return nil
 }
