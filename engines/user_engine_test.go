@@ -43,15 +43,3 @@ func newUserEngine(t *testing.T) {
 	uEngine, err = NewUserEngine(nil, rclient, dbEngine, testLogger)
 	require.NoError(t, err)
 }
-
-func TestUserEngine_SignUp_Login(t *testing.T) {
-	newUserEngine(t)
-	{
-		_, err := uEngine.SignUp(testUserName, testPassword, testLinkedInURL)
-		require.NoError(t, err)
-
-		user, err := uEngine.Login(testUserName, testPassword)
-		require.NoError(t, err)
-		require.NotEqual(t, UserID(0), user.UserID)
-	}
-}

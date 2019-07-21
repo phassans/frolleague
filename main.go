@@ -25,10 +25,11 @@ var (
 	phantomClient  phantom.Client
 	linkedInClient linkedin.Client
 
-	dbEngine       engines.DatabaseEngine
-	userEngine     engines.UserEngine
-	genericEngine  engines.Engine
-	linkedInEngine engines.LinkedInEngine
+	dbEngine         engines.DatabaseEngine
+	userEngine       engines.UserEngine
+	genericEngine    engines.Engine
+	linkedInEngine   engines.LinkedInEngine
+	rocketChatEngine engines.RocketChatEngine
 
 	dbHost              string
 	dbPort              string
@@ -61,14 +62,17 @@ func main() {
 
 	// initialize engines
 	dbEngine = engines.NewDatabaseEngine(roach.Db, logger)
-	userEngine, err = engines.NewUserEngine(rocketClient, phantomClient, dbEngine, logger)
-	linkedInEngine = engines.NewLinkedInEngine(linkedInClient, roach.Db, logger, phantomClient, dbEngine)
+	userEngine, err = engines.NewUserEngine(phantomClient, dbEngine, logger)
 	if err != nil {
 		logger = logger.With().Str("error", err.Error()).Logger()
 		logger.Fatal().Msgf("could not initialize userEngine")
 	}
+
+	linkedInEngine = engines.NewLinkedInEngine(linkedInClient, roach.Db, logger, phantomClient, dbEngine)
+	rocketChatEngine = engines.NewRocketChatEngine(rocketClient, dbEngine, logger)
+
 	logger.Info().Msg("engines initialized")
-	genericEngine = engines.NewGenericEngine(userEngine, linkedInEngine)
+	genericEngine = engines.NewGenericEngine(userEngine, linkedInEngine, rocketChatEngine)
 
 	// start the server
 	server = http.Server{Addr: net.JoinHostPort("", serverPort), Handler: route.APIServerHandler(genericEngine)}

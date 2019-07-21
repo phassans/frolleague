@@ -58,6 +58,9 @@ var (
 		userInfo,
 		userCompaniesUpdate,
 		userSchoolsUpdate,
+
+		// rocketchat
+		userChatSetUp,
 	}
 )
 

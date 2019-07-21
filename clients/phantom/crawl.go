@@ -61,7 +61,7 @@ func (c *client) doCrawlUrlFile() (CrawlResponse, error) {
 func (c *client) doCrawlUrl(request CrawlRequest) (CrawlResponse, error) {
 	logger := c.logger
 
-	response, err := c.DoPost(request)
+	response, err := c.DoPost(request, apiPathProfileScrapper)
 	if err != nil {
 		logger.Error().Msgf("CrawlUrl returned with error")
 		return CrawlResponse{}, fmt.Errorf("CrawlUrl returned with error: %s", err)

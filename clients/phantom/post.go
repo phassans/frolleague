@@ -8,7 +8,7 @@ import (
 	"net/http"
 )
 
-func (c *client) DoPost(request interface{}) ([]byte, error) {
+func (c *client) DoPost(request interface{}, apiPath string) ([]byte, error) {
 	logger := c.logger
 	requestJson, err := json.Marshal(request)
 	if err != nil {

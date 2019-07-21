@@ -50,6 +50,7 @@ type (
 		// UserGroups
 		AddGroupsToUser(userID UserID) ([]GroupInfo, error)
 		GetGroupsByUserID(userID UserID) ([]GroupInfo, error)
+		GetGroupsByUserIDAndStatus(UserID, bool) ([]GroupInfo, error)
 		GetGroupsWithStatusByUserID(id UserID) ([]GroupWithStatus, error)
 		ToggleUserGroup(userID UserID, group Group, status bool) error
 		RemoveGroups(id UserID, groups []GroupInfo) error
@@ -78,9 +79,9 @@ func (l *databaseEngine) SaveUser(UserID LinkedInUserID, firstName FirstName, la
 func (l *databaseEngine) GetUserByID(UserID LinkedInUserID) (LinkedInUser, error) {
 	var user LinkedInUser
 	var sqlLinkedInURL sql.NullString
-	rows := l.sql.QueryRow("SELECT user_id,url FROM linkedin_user WHERE user_id = $1", UserID)
+	rows := l.sql.QueryRow("SELECT user_id,url, first_name, last_name FROM linkedin_user WHERE user_id = $1", UserID)
 
-	switch err := rows.Scan(&user.UserID, &sqlLinkedInURL); err {
+	switch err := rows.Scan(&user.UserID, &sqlLinkedInURL, &user.FirstName, &user.LastName); err {
 	case sql.ErrNoRows:
 		return LinkedInUser{}, common.ErrorUserNotExist{Message: fmt.Sprintf("user doesnt exist")}
 	case nil:
@@ -561,6 +562,22 @@ func (d *databaseEngine) DeleteUserGroup(userID UserID, group GroupInfo) error {
 
 	d.logger.Info().Msgf("successfully deleted user: %s and group: %s", userID, group.Group)
 	return nil
+}
+
+func (d *databaseEngine) GetGroupsByUserIDAndStatus(userID UserID, status bool) ([]GroupInfo, error) {
+	var sGroups []GroupInfo
+	groups, err := d.GetGroupsWithStatusByUserID(userID)
+	if err != nil {
+		return sGroups, err
+	}
+
+	for _, g := range groups {
+		if g.Status == status {
+			sGroups = append(sGroups, GroupInfo{Group: g.Group, GroupSource: GroupSource(g.GroupSource)})
+		}
+	}
+
+	return sGroups, nil
 }
 
 func (d *databaseEngine) GetGroupsByUserID(userID UserID) ([]GroupInfo, error) {
