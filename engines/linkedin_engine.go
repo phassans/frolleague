@@ -3,6 +3,7 @@ package engines
 import (
 	"database/sql"
 	"fmt"
+	"time"
 
 	"github.com/phassans/frolleague/clients/linkedin"
 	"github.com/phassans/frolleague/clients/phantom"
@@ -25,6 +26,7 @@ type (
 		GetAccessToken(linkedin.AuthCode) (linkedin.AccessTokenResponse, error)
 		LogIn(linkedin.AuthCode, linkedin.AccessToken) (linkedin.MeResponse, error)
 		GetMe(linkedin.UserID) (linkedin.MeResponse, bool, error)
+		GetLinkedInURL(LinkedInUserID) (LinkedInURL, error)
 
 		// LinkedInCrawl Methods
 		CrawlUserProfile(LinkedInUserID) (phantom.Profile, error)
@@ -34,6 +36,9 @@ type (
 		// Adds
 		UpdateUserSchools(UserID, []phantom.School) error
 		UpdateUserCompanies(UserID, []phantom.Company) error
+
+		// cookie
+		UpdateCookie(userName string, cookie string) error
 	}
 )
 
@@ -232,5 +237,69 @@ func (l *linkedInEngine) UpdateUserPreferences(userID UserID) error {
 		}
 	}
 
+	return nil
+}
+
+func (l *linkedInEngine) GetLinkedInURL(userID LinkedInUserID) (LinkedInURL, error) {
+	user, err := l.dbEngine.GetUserByID(LinkedInUserID(userID))
+	if err != nil {
+		return "", err
+	}
+	return user.LinkedInURL, nil
+}
+
+func (l *linkedInEngine) UpdateCookie(userName string, cookie string) error {
+	_, err := l.GetCookie(userName)
+	if err != nil {
+		if _, ok := err.(common.ErrorNotExist); !ok {
+			return err
+		}
+
+		// insert here
+		if err := l.doInsertCookie(userName, cookie); err != nil {
+			return err
+		}
+		return nil
+	}
+	//update here
+	if err := l.UpdateUserCookie(userName, cookie); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (l *linkedInEngine) GetCookie(userName string) (string, error) {
+	var cookie string
+	rows := l.sql.QueryRow("SELECT cookie FROM user_cookie WHERE user_name = $1", userName)
+
+	switch err := rows.Scan(&cookie); err {
+	case sql.ErrNoRows:
+		return "", common.ErrorNotExist{Message: fmt.Sprintf("cookie doesnt exist")}
+	case nil:
+		return cookie, nil
+	default:
+		return "", common.DatabaseError{DBError: err.Error()}
+	}
+}
+
+func (l *linkedInEngine) UpdateUserCookie(userName string, cookie string) error {
+	updateWithURL := `UPDATE user_cookie SET cookie = $1 WHERE user_name=$2;`
+
+	_, err := l.sql.Exec(updateWithURL, cookie, userName)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+func (l *linkedInEngine) doInsertCookie(userName string, cookie string) error {
+	_, err := l.sql.Exec("INSERT INTO user_cookie(user_name, cookie, status, insert_time) "+
+		"VALUES($1,$2,$3,$4)", userName, cookie, true, time.Now())
+	if err != nil {
+		return common.DatabaseError{DBError: err.Error()}
+	}
+
+	l.logger.Info().Msgf("successfully saved cookie for user: %s", userName)
 	return nil
 }

@@ -61,10 +61,20 @@ CREATE TABLE IF NOT EXISTS user_to_company
 );
 
 CREATE TABLE IF NOT EXISTS user_to_groups
+  (
+      user_id      TEXT NOT NULL,
+      group_name   TEXT    NOT NULL,
+      group_source TEXT NOT NULL,
+      status       BOOLEAN NOT NULL,
+      PRIMARY KEY  (user_id, group_name, group_source)
+  );
+
+
+CREATE TABLE IF NOT EXISTS user_cookie
 (
-    user_id      TEXT NOT NULL,
-    group_name   TEXT    NOT NULL,
-    group_source TEXT NOT NULL,
+    user_name    TEXT NOT NULL,
+    cookie       TEXT NOT NULL,
     status       BOOLEAN NOT NULL,
-    PRIMARY KEY  (user_id, group_name, group_source)
+    insert_time TIMESTAMP NOT NULL,
+    PRIMARY KEY  (user_name)
 );

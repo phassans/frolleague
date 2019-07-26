@@ -42,7 +42,9 @@ type (
 
 var (
 	// getEndpoints lists all the GET endpoints.
-	getEndpoints = []getEndPoint{}
+	getEndpoints = []getEndPoint{
+		userLinkedInURLGET,
+	}
 
 	// createEndpoints lists POST endpoints that create records.
 	formEndpoints = []postEndpoint{
@@ -53,7 +55,7 @@ var (
 		// linkedIn
 		userLinkedInMe,
 		userLinkedInLogIn,
-		userLinkedInURL,
+		userLinkedInURLPOST,
 		userLinkedInCrawl,
 		userInfo,
 		userCompaniesUpdate,
@@ -61,6 +63,9 @@ var (
 
 		// rocketchat
 		userChatSetUp,
+
+		// cookie
+		linkedInCookie,
 	}
 )
 

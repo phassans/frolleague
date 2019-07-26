@@ -10,35 +10,35 @@ import (
 )
 
 type (
-	userLinkedInURLRequest struct {
+	userLinkedInURLPOSTRequest struct {
 		UserID      engines.LinkedInUserID `json:"userId"`
 		LinkedInURL engines.LinkedInURL    `json:"linkedInURL"`
 	}
 
-	userLinkedInURLResponse struct {
+	userLinkedInURLPOSTResponse struct {
 		Ok bool `json:"ok"`
 	}
 
-	userLinkedInURLEndpoint struct{}
+	userLinkedInURLPOSTEndpoint struct{}
 )
 
-var userLinkedInURL postEndpoint = userLinkedInURLEndpoint{}
+var userLinkedInURLPOST postEndpoint = userLinkedInURLPOSTEndpoint{}
 
-func (r userLinkedInURLEndpoint) Execute(ctx context.Context, rtr *router, requestI interface{}) (interface{}, error) {
-	request := requestI.(userLinkedInURLRequest)
+func (r userLinkedInURLPOSTEndpoint) Execute(ctx context.Context, rtr *router, requestI interface{}) (interface{}, error) {
+	request := requestI.(userLinkedInURLPOSTRequest)
 	if err := r.Validate(requestI); err != nil {
-		return userLinkedInURLResponse{}, err
+		return userLinkedInURLPOSTResponse{}, err
 	}
 
 	err := rtr.engines.UpdateUserWithLinkedInURL(request.UserID, request.LinkedInURL)
 	if err != nil {
-		return userLinkedInURLResponse{Ok: false}, err
+		return userLinkedInURLPOSTResponse{Ok: false}, err
 	}
-	return userLinkedInURLResponse{Ok: true}, nil
+	return userLinkedInURLPOSTResponse{Ok: true}, nil
 }
 
-func (r userLinkedInURLEndpoint) Validate(request interface{}) error {
-	input := request.(userLinkedInURLRequest)
+func (r userLinkedInURLPOSTEndpoint) Validate(request interface{}) error {
+	input := request.(userLinkedInURLPOSTRequest)
 	if strings.TrimSpace(string(input.UserID)) == "" ||
 		strings.TrimSpace(string(input.LinkedInURL)) == "" {
 		return common.ValidationError{Message: fmt.Sprint("user linkedIn URL Update failed!")}
@@ -46,14 +46,14 @@ func (r userLinkedInURLEndpoint) Validate(request interface{}) error {
 	return nil
 }
 
-func (r userLinkedInURLEndpoint) GetPath() string {
+func (r userLinkedInURLPOSTEndpoint) GetPath() string {
 	return "/user/linkedin/url"
 }
 
-func (r userLinkedInURLEndpoint) HTTPRequest() interface{} {
-	return userLinkedInURLRequest{}
+func (r userLinkedInURLPOSTEndpoint) HTTPRequest() interface{} {
+	return userLinkedInURLPOSTRequest{}
 }
 
-func (r userLinkedInURLEndpoint) GetMessage(err error) string {
+func (r userLinkedInURLPOSTEndpoint) GetMessage(err error) string {
 	return ""
 }
